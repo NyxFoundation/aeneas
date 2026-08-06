@@ -1391,7 +1391,7 @@ namespace Test
   -/
   /--
   error: unsolved goals
-case hmax
+case h_fail
 ty : UScalarTy
 x y : UScalar ty
 ⊢ ↑x + ↑y ≤ UScalar.max ty
@@ -1435,7 +1435,7 @@ _✝ : z1 = y + 2
 
   /--
   info: Try this:
-  [apply] let* ⟨ z, h1 ⟩ ← UScalar.add_spec
+  [apply] let* ⟨ z, h1 ⟩ ← UScalar.add_spec.step_spec
   -/
   #guard_msgs in
   example {ty} {x y : UScalar ty} (h : x.val + y.val ≤ UScalar.max ty) :
@@ -1458,7 +1458,7 @@ info: example
   set_option linter.unusedTactic false in
   example {ty} {x y : UScalar ty} (h : x.val + y.val ≤ UScalar.max ty) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
-    let* ⟨ z, h1 ⟩ ← UScalar.add_spec
+    let* ⟨ z, h1 ⟩ ← UScalar.add_spec.step_spec
     extract_goal0
     scalar_tac
 
@@ -1483,8 +1483,8 @@ info: example
     (do
       let z1 ← x + y
       z1 + x) ⦃ z => z.val = 2 * x.val + y.val ⦄ := by
-    let* ⟨ z1, h1 ⟩ ← UScalar.add_spec
-    let* ⟨ z2, h2 ⟩ ← UScalar.add_spec
+    let* ⟨ z1, h1 ⟩ ← UScalar.add_spec.step_spec
+    let* ⟨ z2, h2 ⟩ ← UScalar.add_spec.step_spec
     extract_goal0
     scalar_tac
 
@@ -1492,8 +1492,8 @@ info: example
     (do
       let z1 ← x + y
       z1 + x) ⦃ z => z.val = 2 * x.val + y.val ⦄ := by
-    step with UScalar.add_spec as ⟨ z1, h1 ⟩
-    step with UScalar.add_spec as ⟨ z2, h2 ⟩
+    step with UScalar.add_spec.step_spec as ⟨ z1, h1 ⟩
+    step with UScalar.add_spec.step_spec as ⟨ z2, h2 ⟩
     scalar_tac
 
   example {ty} {x y : UScalar ty}
@@ -1512,40 +1512,40 @@ info: example
   example {ty} {x y : UScalar ty}
     (hmax : x.val + y.val ≤ UScalar.max ty) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
-    step? as ⟨ z, h1 ⟩ says step with UScalar.add_spec as ⟨ z, h1 ⟩
+    step? as ⟨ z, h1 ⟩ says step with UScalar.add_spec.step_spec as ⟨ z, h1 ⟩
     scalar_tac
 
   example {ty} {x y : IScalar ty}
     (hmin : IScalar.min ty ≤ x.val + y.val)
     (hmax : x.val + y.val ≤ IScalar.max ty) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
-    step? as ⟨ z, h1 ⟩ says step with IScalar.add_spec as ⟨ z, h1 ⟩
+    step? as ⟨ z, h1 ⟩ says step with IScalar.add_spec.step_spec as ⟨ z, h1 ⟩
     scalar_tac
 
   example {ty} {x y : UScalar ty}
     (hmax : x.val + y.val ≤ UScalar.max ty) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
-    step with UScalar.add_spec as ⟨ z ⟩
+    step with UScalar.add_spec.step_spec as ⟨ z ⟩
     scalar_tac
 
   example {ty} {x y : IScalar ty}
     (hmin : IScalar.min ty ≤ x.val + y.val)
     (hmax : x.val + y.val ≤ IScalar.max ty) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
-    step with IScalar.add_spec as ⟨ z ⟩
+    step with IScalar.add_spec.step_spec as ⟨ z ⟩
     scalar_tac
 
   example {x y : U32}
     (hmax : x.val + y.val ≤ U32.max) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
     -- This spec theorem is suboptimal (compared to `U32.add_spec`), but it is good to check that it works
-    step with UScalar.add_spec as ⟨ z, h1 ⟩
+    step with UScalar.add_spec.step_spec as ⟨ z, h1 ⟩
     scalar_tac
 
   example {x y : U32}
     (hmax : x.val + y.val ≤ U32.max) :
     x + y ⦃ z => z.val = x.val + y.val ⦄ := by
-    step with U32.add_spec as ⟨ z, h1 ⟩
+    step with U32.add_spec.step_spec as ⟨ z, h1 ⟩
     scalar_tac
 
   example {x y : U32}
@@ -1606,7 +1606,7 @@ info: example
     (hmax : x.val + y.val ≤ IScalar.max ty) :
     False ∨ x + y ⦃ z => z.val = x.val + y.val ⦄ := by
     right
-    step? as ⟨ z, h1 ⟩ says step with IScalar.add_spec as ⟨ z, h1 ⟩
+    step? as ⟨ z, h1 ⟩ says step with IScalar.add_spec.step_spec as ⟨ z, h1 ⟩
     scalar_tac
 
   /--
@@ -1682,7 +1682,7 @@ hf : ∀ (x y : U32), ↑x < 10 → ↑y < 10 → f x y ⦃ x✝ => True ⦄
       let tot := x.val + y.val
       x + y ⦃ z => z.val = tot ⦄ := by
       simp
-      step with U32.add_spec
+      step with U32.add_spec.step_spec
       scalar_tac
 
     def add1 (x y : U32) : Std.Result U32 := do
@@ -1718,8 +1718,8 @@ x y : U32
   example (x y : U32) (h : 2 * x.val + 2 * y.val ≤ U32.max) :
     add1 x y ⦃ _ => True ⦄ := by
     rw [add1]
-    step? as ⟨ z1, h ⟩ says step with U32.add_spec as ⟨ z1, h ⟩
-    step? as ⟨ z2, h ⟩ says step with U32.add_spec as ⟨ z2, h ⟩
+    step? as ⟨ z1, h ⟩ says step with U32.add_spec.step_spec as ⟨ z1, h ⟩
+    step? as ⟨ z2, h ⟩ says step with U32.add_spec.step_spec as ⟨ z2, h ⟩
 end Test
 
 namespace Test
@@ -1766,9 +1766,9 @@ namespace Test
       massert (x < 100#u32)
       massert (y < 100#u32)) ⦃ _ => True ⦄
     := by
-    let* ⟨⟩ ← massert_spec
+    let* ⟨⟩ ← massert_spec.step_spec
     extract_goal0
-    let* ⟨⟩ ← massert_spec
+    let* ⟨⟩ ← massert_spec.step_spec
 
   set_option linter.unusedTactic false in
   /--
@@ -1824,7 +1824,7 @@ _✝ : ↑y = ↑x + z
   -- Test that we properly extract the names from the post-conditions
   /--
   error: unsolved goals
-case hmax
+case h_fail
 x y : U32
 ⊢ ↑x + ↑y ≤ U32.max
 
@@ -2041,8 +2041,8 @@ h1 : ∀ (i : ℕ) (x : i < s.length), s'[i] = 0#u32
     (do let x ← 1#i32 + 2#i32
         let y ← x + x
         ok y) (fun z => z.val == 6) := by
-    step with I32.add_spec
-    step with I32.add_spec
+    step with I32.add_spec.step_spec
+    step with I32.add_spec.step_spec
     simp [*]
 
   -- test lifting an assumption
