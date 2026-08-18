@@ -25,11 +25,11 @@ abbrev PrepareIntroOutputs := Elab.Tactic.TacticM Nat
 structure SpecInfo where
   spec_name : Lean.Name
   arity : Nat
-  program_index : Nat -- index into the arguments of the Result value
+  program_index : Nat -- index into the arguments of the RustM value
   post_index : Nat
 
   mk_spec_mono : Name
-  mk_spec_mono_skip_args : Nat -- number of arguments to be inferred, before Result and Post arguments
+  mk_spec_mono_skip_args : Nat -- number of arguments to be inferred, before RustM and Post arguments
   mk_spec_bind : Name
   mk_spec_bind_skip_args : Nat
 

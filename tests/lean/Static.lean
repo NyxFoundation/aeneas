@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -23,13 +23,13 @@ namespace static
     Source: 'tests/src/static.rs', lines 3:0-5:1
     Visibility: public -/
 structure WithSlice (Self : Type) where
-  SLICE : Result (Slice Std.U16)
+  SLICE : RustM (Slice Std.U16)
 
 /-- [static::read]:
     Source: 'tests/src/static.rs', lines 27:0-29:1 -/
 def read
   {S : Type} (WithSliceInst : WithSlice S) (t : S) (i : Std.Usize) :
-  Result Std.U16
+  RustM Std.U16
   := do
   let s ← WithSliceInst.SLICE
   Slice.index_usize s i
@@ -41,7 +41,7 @@ def use_static.PREFIX : Array Std.U8 1#usize := Array.make 1#usize [ 0#u8 ]
 
 /-- [static::use_static]:
     Source: 'tests/src/static.rs', lines 39:0-42:1 -/
-def use_static : Result Unit := do
+def use_static : RustM Unit := do
   ok ()
 
 end static

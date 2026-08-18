@@ -12,39 +12,39 @@ success, failure and divergence parts of a postcondition.
 
 namespace Aeneas.Std.MvcgenResultTests
 
-open Aeneas Aeneas.Std Result Std.Do WP
+open Aeneas Aeneas.Std RustM Std.Do WP
 
 set_option mvcgen.warning false
 
 /- ## `ok` and `fail` -/
 
-example : ⦃ ⌜ True ⌝ ⦄ (ok 3 : Result Nat) ⦃ ⇓ r => ⌜ r = 3 ⌝ ⦄ := by
+example : ⦃ ⌜ True ⌝ ⦄ (ok 3 : RustM Nat) ⦃ ⇓ r => ⌜ r = 3 ⌝ ⦄ := by
   mvcgen
 
-example : ⦃ ⌜ True ⌝ ⦄ (fail .panic : Result Nat) ⦃ ⇓? r => ⌜ r = 3 ⌝ ⦄ := by
+example : ⦃ ⌜ True ⌝ ⦄ (fail .panic : RustM Nat) ⦃ ⇓? r => ⌜ r = 3 ⌝ ⦄ := by
   mvcgen
 
-example : ¬ ⦃ ⌜ True ⌝ ⦄ (fail .panic : Result Nat) ⦃ ⇓ r => ⌜ r = 3 ⌝ ⦄ := by
+example : ¬ ⦃ ⌜ True ⌝ ⦄ (fail .panic : RustM Nat) ⦃ ⇓ r => ⌜ r = 3 ⌝ ⦄ := by
   simp [Triple, WP.wp, PredTrans.apply]
 
 /- ## `PostCond` accessors -/
 
-example (Q : PostCond Nat Result.postShape) :
+example (Q : PostCond Nat RustM.postShape) :
     PostCond.ok Q 3 ↔ (Q.1 3).down := Iff.rfl
 
-example (Q : PostCond Nat Result.postShape) (e : Error) :
+example (Q : PostCond Nat RustM.postShape) (e : Error) :
     PostCond.fail Q e ↔ (Q.2.1 (ULift.up e)).down := Iff.rfl
 
 /-- Partial correctness allows divergence, total correctness does not. -/
-example : PostCond.div (⇓? (_ : Nat) => ⌜ False ⌝ : PostCond Nat Result.postShape) := by
+example : PostCond.div (⇓? (_ : Nat) => ⌜ False ⌝ : PostCond Nat RustM.postShape) := by
   simp [PostCond.div]
 
-example : ¬ PostCond.div (⇓ (_ : Nat) => ⌜ True ⌝ : PostCond Nat Result.postShape) := by
+example : ¬ PostCond.div (⇓ (_ : Nat) => ⌜ True ⌝ : PostCond Nat RustM.postShape) := by
   simp [PostCond.div]
 
 /- ## Tuples in a `do` block go through `uncurry` -/
 
-def pair (x : Nat) : Result (Nat × Nat) := ok (x, x + 1)
+def pair (x : Nat) : RustM (Nat × Nat) := ok (x, x + 1)
 
 example (x : Nat) :
     ⦃ ⌜ True ⌝ ⦄ (do let (a, b) ← pair x; ok (a + b)) ⦃ ⇓ r => ⌜ r = 2 * x + 1 ⌝ ⦄ := by
@@ -53,7 +53,7 @@ example (x : Nat) :
 
 /- ## Loops -/
 
-def countdown (n : Nat) : Result Nat :=
+def countdown (n : Nat) : RustM Nat :=
   loop (fun i => if i = 0 then ok (.done 0) else ok (.cont (i - 1))) n
 
 /-- Total correctness: the measure must decrease. -/

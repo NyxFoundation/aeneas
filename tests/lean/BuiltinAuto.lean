@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -27,7 +27,7 @@ namespace builtin_auto
     Name pattern: [core::ptr::null]
     Visibility: public -/
 @[rust_fun "core::ptr::null"]
-axiom core.ptr.null (T : Type) : Result (ConstRawPtr T)
+axiom core.ptr.null (T : Type) : RustM (ConstRawPtr T)
 
 /-- [builtin_auto::Inner]
     Source: 'tests/src/builtin-auto.rs', lines 7:0-9:1 -/
@@ -37,7 +37,7 @@ structure Inner where
 /-- [builtin_auto::make]:
     Source: 'tests/src/builtin-auto.rs', lines 11:0-15:1
     Visibility: public -/
-def make : Result Inner := do
+def make : RustM Inner := do
   let p ← core.ptr.null Std.U8
   ok { ptr := p }
 

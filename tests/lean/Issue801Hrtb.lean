@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -22,11 +22,11 @@ namespace issue_801_hrtb
 /-- Trait declaration: [issue_801_hrtb::T]
     Source: 'tests/src/issue-801-hrtb.rs', lines 4:0-6:1 -/
 structure T (Self : Type) (X : Type) where
-  dummy : Result X
+  dummy : RustM X
 
 /-- [issue_801_hrtb::test]:
     Source: 'tests/src/issue-801-hrtb.rs', lines 8:0-10:1 -/
-def test {P : Type} (TPSharedU8Inst : T P Std.U8) : Result Std.U8 := do
+def test {P : Type} (TPSharedU8Inst : T P Std.U8) : RustM Std.U8 := do
   TPSharedU8Inst.dummy
 
 end issue_801_hrtb

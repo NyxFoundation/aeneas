@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -22,7 +22,7 @@ namespace iter_adapters
 /-- [iter_adapters::test_enumerate_slice]:
     Source: 'tests/src/iter_adapters.rs', lines 14:0-24:1
     Visibility: public -/
-def test_enumerate_slice : Result Unit := do
+def test_enumerate_slice : RustM Unit := do
   let s ←
     lift (Array.to_slice (Array.make 3#usize [ 10#u32, 20#u32, 30#u32 ]))
   let i ← core.slice.Slice.iter s
@@ -59,7 +59,7 @@ def test_enumerate_slice : Result Unit := do
 /-- [iter_adapters::test_enumerate_empty]:
     Source: 'tests/src/iter_adapters.rs', lines 28:0-32:1
     Visibility: public -/
-def test_enumerate_empty : Result Unit := do
+def test_enumerate_empty : RustM Unit := do
   let s ← lift (Array.to_slice (Std.Array.empty Std.U32))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -77,7 +77,7 @@ def test_enumerate_empty : Result Unit := do
 /-- [iter_adapters::test_take_2]:
     Source: 'tests/src/iter_adapters.rs', lines 40:0-46:1
     Visibility: public -/
-def test_take_2 : Result Unit := do
+def test_take_2 : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 4#usize [ 10#u32, 20#u32, 30#u32, 40#u32 ]))
@@ -107,7 +107,7 @@ def test_take_2 : Result Unit := do
 /-- [iter_adapters::test_take_0]:
     Source: 'tests/src/iter_adapters.rs', lines 50:0-54:1
     Visibility: public -/
-def test_take_0 : Result Unit := do
+def test_take_0 : RustM Unit := do
   let s ←
     lift (Array.to_slice (Array.make 3#usize [ 10#u32, 20#u32, 30#u32 ]))
   let i ← core.slice.Slice.iter s
@@ -126,7 +126,7 @@ def test_take_0 : Result Unit := do
 /-- [iter_adapters::test_take_more_than_available]:
     Source: 'tests/src/iter_adapters.rs', lines 58:0-65:1
     Visibility: public -/
-def test_take_more_than_available : Result Unit := do
+def test_take_more_than_available : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 1#u32, 2#u32, 3#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -162,7 +162,7 @@ def test_take_more_than_available : Result Unit := do
 @[rust_loop_body]
 def test_range_u8_loop.body
   (iter : core.ops.range.Range Std.U8) (count : Std.U32) :
-  Result (ControlFlow ((core.ops.range.Range Std.U8) × Std.U32) Std.U32)
+  RustM (ControlFlow ((core.ops.range.Range Std.U8) × Std.U32) Std.U32)
   := do
   let (o, iter1) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU8 iter
@@ -176,7 +176,7 @@ def test_range_u8_loop.body
     Visibility: public -/
 @[rust_loop]
 def test_range_u8_loop
-  (iter : core.ops.range.Range Std.U8) (count : Std.U32) : Result Std.U32 := do
+  (iter : core.ops.range.Range Std.U8) (count : Std.U32) : RustM Std.U32 := do
   loop
     (fun (iter1, count1) => test_range_u8_loop.body iter1 count1)
     (iter, count)
@@ -184,7 +184,7 @@ def test_range_u8_loop
 /-- [iter_adapters::test_range_u8]:
     Source: 'tests/src/iter_adapters.rs', lines 73:0-79:1
     Visibility: public -/
-def test_range_u8 : Result Unit := do
+def test_range_u8 : RustM Unit := do
   let count ← test_range_u8_loop { start := 0#u8, «end» := 5#u8 } 0#u32
   massert (count = 5#u32)
 
@@ -197,7 +197,7 @@ def test_range_u8 : Result Unit := do
 @[rust_loop_body]
 def test_range_u16_loop.body
   (iter : core.ops.range.Range Std.U16) (count : Std.U32) :
-  Result (ControlFlow ((core.ops.range.Range Std.U16) × Std.U32) Std.U32)
+  RustM (ControlFlow ((core.ops.range.Range Std.U16) × Std.U32) Std.U32)
   := do
   let (o, iter1) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU16 iter
@@ -212,7 +212,7 @@ def test_range_u16_loop.body
 @[rust_loop]
 def test_range_u16_loop
   (iter : core.ops.range.Range Std.U16) (count : Std.U32) :
-  Result Std.U32
+  RustM Std.U32
   := do
   loop
     (fun (iter1, count1) => test_range_u16_loop.body iter1 count1)
@@ -221,7 +221,7 @@ def test_range_u16_loop
 /-- [iter_adapters::test_range_u16]:
     Source: 'tests/src/iter_adapters.rs', lines 83:0-89:1
     Visibility: public -/
-def test_range_u16 : Result Unit := do
+def test_range_u16 : RustM Unit := do
   let count ← test_range_u16_loop { start := 0#u16, «end» := 4#u16 } 0#u32
   massert (count = 4#u32)
 
@@ -234,7 +234,7 @@ def test_range_u16 : Result Unit := do
 @[rust_loop_body]
 def test_range_u32_loop.body
   (iter : core.ops.range.Range Std.U32) (count : Std.U32) :
-  Result (ControlFlow ((core.ops.range.Range Std.U32) × Std.U32) Std.U32)
+  RustM (ControlFlow ((core.ops.range.Range Std.U32) × Std.U32) Std.U32)
   := do
   let (o, iter1) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU32 iter
@@ -249,7 +249,7 @@ def test_range_u32_loop.body
 @[rust_loop]
 def test_range_u32_loop
   (iter : core.ops.range.Range Std.U32) (count : Std.U32) :
-  Result Std.U32
+  RustM Std.U32
   := do
   loop
     (fun (iter1, count1) => test_range_u32_loop.body iter1 count1)
@@ -258,7 +258,7 @@ def test_range_u32_loop
 /-- [iter_adapters::test_range_u32]:
     Source: 'tests/src/iter_adapters.rs', lines 93:0-99:1
     Visibility: public -/
-def test_range_u32 : Result Unit := do
+def test_range_u32 : RustM Unit := do
   let count ← test_range_u32_loop { start := 0#u32, «end» := 3#u32 } 0#u32
   massert (count = 3#u32)
 
@@ -271,7 +271,7 @@ def test_range_u32 : Result Unit := do
 @[rust_loop_body]
 def test_range_u64_loop.body
   (iter : core.ops.range.Range Std.U64) (count : Std.U64) :
-  Result (ControlFlow ((core.ops.range.Range Std.U64) × Std.U64) Std.U64)
+  RustM (ControlFlow ((core.ops.range.Range Std.U64) × Std.U64) Std.U64)
   := do
   let (o, iter1) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU64 iter
@@ -286,7 +286,7 @@ def test_range_u64_loop.body
 @[rust_loop]
 def test_range_u64_loop
   (iter : core.ops.range.Range Std.U64) (count : Std.U64) :
-  Result Std.U64
+  RustM Std.U64
   := do
   loop
     (fun (iter1, count1) => test_range_u64_loop.body iter1 count1)
@@ -295,7 +295,7 @@ def test_range_u64_loop
 /-- [iter_adapters::test_range_u64]:
     Source: 'tests/src/iter_adapters.rs', lines 103:0-109:1
     Visibility: public -/
-def test_range_u64 : Result Unit := do
+def test_range_u64 : RustM Unit := do
   let count ← test_range_u64_loop { start := 0#u64, «end» := 4#u64 } 0#u64
   massert (count = 4#u64)
 
@@ -308,7 +308,7 @@ def test_range_u64 : Result Unit := do
 @[rust_loop_body]
 def test_range_usize_loop.body
   (iter : core.ops.range.Range Std.Usize) (count : Std.Usize) :
-  Result (ControlFlow ((core.ops.range.Range Std.Usize) × Std.Usize)
+  RustM (ControlFlow ((core.ops.range.Range Std.Usize) × Std.Usize)
     Std.Usize)
   := do
   let (o, iter1) ←
@@ -324,7 +324,7 @@ def test_range_usize_loop.body
 @[rust_loop]
 def test_range_usize_loop
   (iter : core.ops.range.Range Std.Usize) (count : Std.Usize) :
-  Result Std.Usize
+  RustM Std.Usize
   := do
   loop
     (fun (iter1, count1) => test_range_usize_loop.body iter1 count1)
@@ -333,7 +333,7 @@ def test_range_usize_loop
 /-- [iter_adapters::test_range_usize]:
     Source: 'tests/src/iter_adapters.rs', lines 113:0-119:1
     Visibility: public -/
-def test_range_usize : Result Unit := do
+def test_range_usize : RustM Unit := do
   let count ←
     test_range_usize_loop { start := 0#usize, «end» := 5#usize } 0#usize
   massert (count = 5#usize)
@@ -347,7 +347,7 @@ def test_range_usize : Result Unit := do
 @[rust_loop_body]
 def test_range_empty_loop.body
   (iter : core.ops.range.Range Std.U8) (count : Std.U32) :
-  Result (ControlFlow ((core.ops.range.Range Std.U8) × Std.U32) Std.U32)
+  RustM (ControlFlow ((core.ops.range.Range Std.U8) × Std.U32) Std.U32)
   := do
   let (o, iter1) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU8 iter
@@ -361,7 +361,7 @@ def test_range_empty_loop.body
     Visibility: public -/
 @[rust_loop]
 def test_range_empty_loop
-  (iter : core.ops.range.Range Std.U8) (count : Std.U32) : Result Std.U32 := do
+  (iter : core.ops.range.Range Std.U8) (count : Std.U32) : RustM Std.U32 := do
   loop
     (fun (iter1, count1) => test_range_empty_loop.body iter1 count1)
     (iter, count)
@@ -369,7 +369,7 @@ def test_range_empty_loop
 /-- [iter_adapters::test_range_empty]:
     Source: 'tests/src/iter_adapters.rs', lines 123:0-129:1
     Visibility: public -/
-def test_range_empty : Result Unit := do
+def test_range_empty : RustM Unit := do
   let count ← test_range_empty_loop { start := 5#u8, «end» := 5#u8 } 0#u32
   massert (count = 0#u32)
 
@@ -379,7 +379,7 @@ def test_range_empty : Result Unit := do
 /-- [iter_adapters::test_array_into_iter]:
     Source: 'tests/src/iter_adapters.rs', lines 137:0-144:1
     Visibility: public -/
-def test_array_into_iter : Result Unit := do
+def test_array_into_iter : RustM Unit := do
   let s ←
     lift (Array.to_slice (Array.make 3#usize [ 10#u32, 20#u32, 30#u32 ]))
   let it ← core.slice.Slice.iter s
@@ -402,7 +402,7 @@ def test_array_into_iter : Result Unit := do
 /-- [iter_adapters::test_slice_into_iter]:
     Source: 'tests/src/iter_adapters.rs', lines 148:0-157:1
     Visibility: public -/
-def test_slice_into_iter : Result Unit := do
+def test_slice_into_iter : RustM Unit := do
   let s ←
     lift (Array.to_slice (Array.make 4#usize [ 1#u32, 2#u32, 3#u32, 4#u32 ]))
   let it ← core.slice.Slice.iter s
@@ -428,7 +428,7 @@ def test_slice_into_iter : Result Unit := do
 /-- [iter_adapters::test_enumerate_step_by]:
     Source: 'tests/src/iter_adapters.rs', lines 165:0-172:1
     Visibility: public -/
-def test_enumerate_step_by : Result Unit := do
+def test_enumerate_step_by : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 6#usize [ 10#u32, 20#u32, 30#u32, 40#u32, 50#u32, 60#u32 ]))
@@ -461,7 +461,7 @@ def test_enumerate_step_by : Result Unit := do
 /-- [iter_adapters::test_enumerate_take]:
     Source: 'tests/src/iter_adapters.rs', lines 176:0-184:1
     Visibility: public -/
-def test_enumerate_take : Result Unit := do
+def test_enumerate_take : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 5#usize [ 10#u32, 20#u32, 30#u32, 40#u32, 50#u32 ]))
@@ -500,7 +500,7 @@ def test_enumerate_take : Result Unit := do
 /-- [iter_adapters::test_take_exhausted_then_next]:
     Source: 'tests/src/iter_adapters.rs', lines 188:0-197:1
     Visibility: public -/
-def test_take_exhausted_then_next : Result Unit := do
+def test_take_exhausted_then_next : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 1#usize [ 42#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -528,7 +528,7 @@ def test_take_exhausted_then_next : Result Unit := do
 /-- [iter_adapters::test_range_single_element]:
     Source: 'tests/src/iter_adapters.rs', lines 206:0-210:1
     Visibility: public -/
-def test_range_single_element : Result Unit := do
+def test_range_single_element : RustM Unit := do
   let (o, it) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU8
       { start := 0#u8, «end» := 1#u8 }
@@ -544,7 +544,7 @@ def test_range_single_element : Result Unit := do
 /-- [iter_adapters::test_range_u8_near_max]:
     Source: 'tests/src/iter_adapters.rs', lines 214:0-218:1
     Visibility: public -/
-def test_range_u8_near_max : Result Unit := do
+def test_range_u8_near_max : RustM Unit := do
   let (o, it) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU8
       { start := 254#u8, «end» := 255#u8 }
@@ -560,7 +560,7 @@ def test_range_u8_near_max : Result Unit := do
 /-- [iter_adapters::test_range_u8_start_gt_end]:
     Source: 'tests/src/iter_adapters.rs', lines 222:0-225:1
     Visibility: public -/
-def test_range_u8_start_gt_end : Result Unit := do
+def test_range_u8_start_gt_end : RustM Unit := do
   let (o, _) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU8
       { start := 10#u8, «end» := 5#u8 }
@@ -573,7 +573,7 @@ def test_range_u8_start_gt_end : Result Unit := do
 /-- [iter_adapters::test_range_u8_start_eq_end]:
     Source: 'tests/src/iter_adapters.rs', lines 229:0-232:1
     Visibility: public -/
-def test_range_u8_start_eq_end : Result Unit := do
+def test_range_u8_start_eq_end : RustM Unit := do
   let (o, _) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU8
       { start := 5#u8, «end» := 5#u8 }
@@ -586,7 +586,7 @@ def test_range_u8_start_eq_end : Result Unit := do
 /-- [iter_adapters::test_range_u16_boundary]:
     Source: 'tests/src/iter_adapters.rs', lines 236:0-242:1
     Visibility: public -/
-def test_range_u16_boundary : Result Unit := do
+def test_range_u16_boundary : RustM Unit := do
   let (o, it) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU16
       { start := 0#u16, «end» := 3#u16 }
@@ -611,7 +611,7 @@ def test_range_u16_boundary : Result Unit := do
 /-- [iter_adapters::test_range_u32_boundary]:
     Source: 'tests/src/iter_adapters.rs', lines 246:0-251:1
     Visibility: public -/
-def test_range_u32_boundary : Result Unit := do
+def test_range_u32_boundary : RustM Unit := do
   let (o, it) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU32
       { start := 0#u32, «end» := 2#u32 }
@@ -632,7 +632,7 @@ def test_range_u32_boundary : Result Unit := do
 /-- [iter_adapters::test_range_u64_boundary]:
     Source: 'tests/src/iter_adapters.rs', lines 255:0-261:1
     Visibility: public -/
-def test_range_u64_boundary : Result Unit := do
+def test_range_u64_boundary : RustM Unit := do
   let (o, it) ←
     core.iter.range.IteratorRange.next core.iter.range.StepU64
       { start := 100#u64, «end» := 103#u64 }
@@ -657,7 +657,7 @@ def test_range_u64_boundary : Result Unit := do
 /-- [iter_adapters::test_range_usize_start_gt_end]:
     Source: 'tests/src/iter_adapters.rs', lines 265:0-268:1
     Visibility: public -/
-def test_range_usize_start_gt_end : Result Unit := do
+def test_range_usize_start_gt_end : RustM Unit := do
   let (o, _) ←
     core.iter.range.IteratorRange.next core.iter.range.StepUsize
       { start := 10#usize, «end» := 5#usize }
@@ -670,7 +670,7 @@ def test_range_usize_start_gt_end : Result Unit := do
 /-- [iter_adapters::test_step_by_larger_than_range]:
     Source: 'tests/src/iter_adapters.rs', lines 272:0-276:1
     Visibility: public -/
-def test_step_by_larger_than_range : Result Unit := do
+def test_step_by_larger_than_range : RustM Unit := do
   let it ←
     core.iter.traits.iterator.Iterator.step_by.trait_default
       (core.iter.traits.iterator.IteratorRange core.iter.range.StepU8)
@@ -692,7 +692,7 @@ def test_step_by_larger_than_range : Result Unit := do
 /-- [iter_adapters::test_step_by_exact_range]:
     Source: 'tests/src/iter_adapters.rs', lines 280:0-284:1
     Visibility: public -/
-def test_step_by_exact_range : Result Unit := do
+def test_step_by_exact_range : RustM Unit := do
   let it ←
     core.iter.traits.iterator.Iterator.step_by.trait_default
       (core.iter.traits.iterator.IteratorRange core.iter.range.StepU8)
@@ -714,7 +714,7 @@ def test_step_by_exact_range : Result Unit := do
 /-- [iter_adapters::test_step_by_one]:
     Source: 'tests/src/iter_adapters.rs', lines 288:0-295:1
     Visibility: public -/
-def test_step_by_one : Result Unit := do
+def test_step_by_one : RustM Unit := do
   let it ←
     core.iter.traits.iterator.Iterator.step_by.trait_default
       (core.iter.traits.iterator.IteratorRange core.iter.range.StepU8)
@@ -751,7 +751,7 @@ def test_step_by_one : Result Unit := do
 /-- [iter_adapters::test_step_by_empty]:
     Source: 'tests/src/iter_adapters.rs', lines 299:0-302:1
     Visibility: public -/
-def test_step_by_empty : Result Unit := do
+def test_step_by_empty : RustM Unit := do
   let it ←
     core.iter.traits.iterator.Iterator.step_by.trait_default
       (core.iter.traits.iterator.IteratorRange core.iter.range.StepU8)
@@ -768,7 +768,7 @@ def test_step_by_empty : Result Unit := do
 /-- [iter_adapters::test_step_by_odd_range]:
     Source: 'tests/src/iter_adapters.rs', lines 306:0-312:1
     Visibility: public -/
-def test_step_by_odd_range : Result Unit := do
+def test_step_by_odd_range : RustM Unit := do
   let it ←
     core.iter.traits.iterator.Iterator.step_by.trait_default
       (core.iter.traits.iterator.IteratorRange core.iter.range.StepU8)
@@ -800,7 +800,7 @@ def test_step_by_odd_range : Result Unit := do
 /-- [iter_adapters::test_step_by_u8_near_max]:
     Source: 'tests/src/iter_adapters.rs', lines 316:0-322:1
     Visibility: public -/
-def test_step_by_u8_near_max : Result Unit := do
+def test_step_by_u8_near_max : RustM Unit := do
   let it ←
     core.iter.traits.iterator.Iterator.step_by.trait_default
       (core.iter.traits.iterator.IteratorRange core.iter.range.StepU8)
@@ -832,7 +832,7 @@ def test_step_by_u8_near_max : Result Unit := do
 /-- [iter_adapters::test_range_inclusive_basic]:
     Source: 'tests/src/iter_adapters.rs', lines 330:0-336:1
     Visibility: public -/
-def test_range_inclusive_basic : Result Unit := do
+def test_range_inclusive_basic : RustM Unit := do
   let it ← core.ops.range.RangeInclusive.new 1#usize 3#usize
   let (o, it1) ←
     core.ops.range.RangeInclusive.Insts.CoreIterTraitsIteratorIterator.next
@@ -861,7 +861,7 @@ def test_range_inclusive_basic : Result Unit := do
 /-- [iter_adapters::test_range_inclusive_singleton]:
     Source: 'tests/src/iter_adapters.rs', lines 340:0-344:1
     Visibility: public -/
-def test_range_inclusive_singleton : Result Unit := do
+def test_range_inclusive_singleton : RustM Unit := do
   let it ← core.ops.range.RangeInclusive.new 7#usize 7#usize
   let (o, it1) ←
     core.ops.range.RangeInclusive.Insts.CoreIterTraitsIteratorIterator.next
@@ -880,7 +880,7 @@ def test_range_inclusive_singleton : Result Unit := do
 /-- [iter_adapters::test_range_inclusive_empty]:
     Source: 'tests/src/iter_adapters.rs', lines 348:0-351:1
     Visibility: public -/
-def test_range_inclusive_empty : Result Unit := do
+def test_range_inclusive_empty : RustM Unit := do
   let it ← core.ops.range.RangeInclusive.new 5#usize 3#usize
   let (o, _) ←
     core.ops.range.RangeInclusive.Insts.CoreIterTraitsIteratorIterator.next

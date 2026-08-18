@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -22,7 +22,7 @@ namespace cast_signed
 /-- [cast_signed::test_u8_cast_signed_all_ones]:
     Source: 'tests/src/cast_signed.rs', lines 9:0-13:1
     Visibility: public -/
-def test_u8_cast_signed_all_ones : Result Unit := do
+def test_u8_cast_signed_all_ones : RustM Unit := do
   let y ← core.num.U8.cast_signed 255#u8
   massert (y = (-1)#i8)
 
@@ -32,7 +32,7 @@ def test_u8_cast_signed_all_ones : Result Unit := do
 /-- [cast_signed::test_i8_cast_unsigned_neg_one]:
     Source: 'tests/src/cast_signed.rs', lines 17:0-21:1
     Visibility: public -/
-def test_i8_cast_unsigned_neg_one : Result Unit := do
+def test_i8_cast_unsigned_neg_one : RustM Unit := do
   let y ← core.num.I8.cast_unsigned (-1)#i8
   massert (y = 255#u8)
 
@@ -42,7 +42,7 @@ def test_i8_cast_unsigned_neg_one : Result Unit := do
 /-- [cast_signed::test_u16_cast_signed_high_bit]:
     Source: 'tests/src/cast_signed.rs', lines 25:0-29:1
     Visibility: public -/
-def test_u16_cast_signed_high_bit : Result Unit := do
+def test_u16_cast_signed_high_bit : RustM Unit := do
   let y ← core.num.U16.cast_signed 32768#u16
   massert (y = core.num.I16.MIN)
 
@@ -52,7 +52,7 @@ def test_u16_cast_signed_high_bit : Result Unit := do
 /-- [cast_signed::test_i16_cast_unsigned_neg_one]:
     Source: 'tests/src/cast_signed.rs', lines 33:0-37:1
     Visibility: public -/
-def test_i16_cast_unsigned_neg_one : Result Unit := do
+def test_i16_cast_unsigned_neg_one : RustM Unit := do
   let y ← core.num.I16.cast_unsigned (-1)#i16
   massert (y = core.num.U16.MAX)
 
@@ -62,7 +62,7 @@ def test_i16_cast_unsigned_neg_one : Result Unit := do
 /-- [cast_signed::test_u32_cast_signed_small]:
     Source: 'tests/src/cast_signed.rs', lines 41:0-45:1
     Visibility: public -/
-def test_u32_cast_signed_small : Result Unit := do
+def test_u32_cast_signed_small : RustM Unit := do
   let y ← core.num.U32.cast_signed 255#u32
   massert (y = 255#i32)
 
@@ -72,7 +72,7 @@ def test_u32_cast_signed_small : Result Unit := do
 /-- [cast_signed::test_u32_cast_signed_all_ones]:
     Source: 'tests/src/cast_signed.rs', lines 49:0-53:1
     Visibility: public -/
-def test_u32_cast_signed_all_ones : Result Unit := do
+def test_u32_cast_signed_all_ones : RustM Unit := do
   let y ← core.num.U32.cast_signed 4294967295#u32
   massert (y = (-1)#i32)
 
@@ -82,7 +82,7 @@ def test_u32_cast_signed_all_ones : Result Unit := do
 /-- [cast_signed::test_u32_cast_signed_high_bit]:
     Source: 'tests/src/cast_signed.rs', lines 57:0-61:1
     Visibility: public -/
-def test_u32_cast_signed_high_bit : Result Unit := do
+def test_u32_cast_signed_high_bit : RustM Unit := do
   let y ← core.num.U32.cast_signed 2147483648#u32
   massert (y = core.num.I32.MIN)
 
@@ -92,7 +92,7 @@ def test_u32_cast_signed_high_bit : Result Unit := do
 /-- [cast_signed::test_i32_cast_unsigned_neg_one]:
     Source: 'tests/src/cast_signed.rs', lines 65:0-69:1
     Visibility: public -/
-def test_i32_cast_unsigned_neg_one : Result Unit := do
+def test_i32_cast_unsigned_neg_one : RustM Unit := do
   let y ← core.num.I32.cast_unsigned (-1)#i32
   massert (y = 4294967295#u32)
 
@@ -102,7 +102,7 @@ def test_i32_cast_unsigned_neg_one : Result Unit := do
 /-- [cast_signed::test_i32_cast_roundtrip]:
     Source: 'tests/src/cast_signed.rs', lines 73:0-77:1
     Visibility: public -/
-def test_i32_cast_roundtrip : Result Unit := do
+def test_i32_cast_roundtrip : RustM Unit := do
   let i ← core.num.U32.cast_signed 3735928559#u32
   let y ← core.num.I32.cast_unsigned i
   massert (y = 3735928559#u32)
@@ -113,7 +113,7 @@ def test_i32_cast_roundtrip : Result Unit := do
 /-- [cast_signed::test_u64_cast_signed_all_ones]:
     Source: 'tests/src/cast_signed.rs', lines 81:0-85:1
     Visibility: public -/
-def test_u64_cast_signed_all_ones : Result Unit := do
+def test_u64_cast_signed_all_ones : RustM Unit := do
   let y ← core.num.U64.cast_signed core.num.U64.MAX
   massert (y = (-1)#i64)
 
@@ -123,7 +123,7 @@ def test_u64_cast_signed_all_ones : Result Unit := do
 /-- [cast_signed::test_i64_cast_unsigned_neg_one]:
     Source: 'tests/src/cast_signed.rs', lines 89:0-93:1
     Visibility: public -/
-def test_i64_cast_unsigned_neg_one : Result Unit := do
+def test_i64_cast_unsigned_neg_one : RustM Unit := do
   let y ← core.num.I64.cast_unsigned (-1)#i64
   massert (y = core.num.U64.MAX)
 
@@ -133,7 +133,7 @@ def test_i64_cast_unsigned_neg_one : Result Unit := do
 /-- [cast_signed::test_u128_cast_signed_all_ones]:
     Source: 'tests/src/cast_signed.rs', lines 97:0-101:1
     Visibility: public -/
-def test_u128_cast_signed_all_ones : Result Unit := do
+def test_u128_cast_signed_all_ones : RustM Unit := do
   let y ← core.num.U128.cast_signed core.num.U128.MAX
   massert (y = (-1)#i128)
 
@@ -143,7 +143,7 @@ def test_u128_cast_signed_all_ones : Result Unit := do
 /-- [cast_signed::test_i128_cast_unsigned_neg_one]:
     Source: 'tests/src/cast_signed.rs', lines 105:0-109:1
     Visibility: public -/
-def test_i128_cast_unsigned_neg_one : Result Unit := do
+def test_i128_cast_unsigned_neg_one : RustM Unit := do
   let y ← core.num.I128.cast_unsigned (-1)#i128
   massert (y = core.num.U128.MAX)
 
@@ -153,7 +153,7 @@ def test_i128_cast_unsigned_neg_one : Result Unit := do
 /-- [cast_signed::test_usize_cast_roundtrip]:
     Source: 'tests/src/cast_signed.rs', lines 113:0-117:1
     Visibility: public -/
-def test_usize_cast_roundtrip : Result Unit := do
+def test_usize_cast_roundtrip : RustM Unit := do
   let i ← core.num.Usize.cast_signed 12345#usize
   let y ← core.num.Isize.cast_unsigned i
   massert (y = 12345#usize)
@@ -164,7 +164,7 @@ def test_usize_cast_roundtrip : Result Unit := do
 /-- [cast_signed::test_isize_cast_unsigned_neg_one]:
     Source: 'tests/src/cast_signed.rs', lines 121:0-125:1
     Visibility: public -/
-def test_isize_cast_unsigned_neg_one : Result Unit := do
+def test_isize_cast_unsigned_neg_one : RustM Unit := do
   let y ← core.num.Isize.cast_unsigned (-1)#isize
   massert (y = core.num.Usize.MAX)
 

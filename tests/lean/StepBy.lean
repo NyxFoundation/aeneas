@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -22,7 +22,7 @@ namespace step_by
 /-- [step_by::test_step_by_1]:
     Source: 'tests/src/step_by.rs', lines 8:0-17:1
     Visibility: public -/
-def test_step_by_1 : Result Unit := do
+def test_step_by_1 : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 5#usize [ 0#u32, 1#u32, 2#u32, 3#u32, 4#u32 ]))
@@ -67,7 +67,7 @@ def test_step_by_1 : Result Unit := do
 /-- [step_by::test_step_by_2]:
     Source: 'tests/src/step_by.rs', lines 21:0-28:1
     Visibility: public -/
-def test_step_by_2 : Result Unit := do
+def test_step_by_2 : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 5#usize [ 0#u32, 1#u32, 2#u32, 3#u32, 4#u32 ]))
@@ -102,7 +102,7 @@ def test_step_by_2 : Result Unit := do
 /-- [step_by::test_step_by_3]:
     Source: 'tests/src/step_by.rs', lines 32:0-39:1
     Visibility: public -/
-def test_step_by_3 : Result Unit := do
+def test_step_by_3 : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 7#usize [ 0#u32, 1#u32, 2#u32, 3#u32, 4#u32, 5#u32, 6#u32 ]))
@@ -137,7 +137,7 @@ def test_step_by_3 : Result Unit := do
 /-- [step_by::test_step_by_larger_than_len]:
     Source: 'tests/src/step_by.rs', lines 43:0-48:1
     Visibility: public -/
-def test_step_by_larger_than_len : Result Unit := do
+def test_step_by_larger_than_len : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 0#u32, 1#u32, 2#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -160,7 +160,7 @@ def test_step_by_larger_than_len : Result Unit := do
 /-- [step_by::test_step_by_empty]:
     Source: 'tests/src/step_by.rs', lines 52:0-56:1
     Visibility: public -/
-def test_step_by_empty : Result Unit := do
+def test_step_by_empty : RustM Unit := do
   let s ← lift (Array.to_slice (Std.Array.empty Std.U32))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -178,7 +178,7 @@ def test_step_by_empty : Result Unit := do
 /-- [step_by::test_step_by_single]:
     Source: 'tests/src/step_by.rs', lines 60:0-65:1
     Visibility: public -/
-def test_step_by_single : Result Unit := do
+def test_step_by_single : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 1#usize [ 42#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -201,7 +201,7 @@ def test_step_by_single : Result Unit := do
 /-- [step_by::test_step_by_single_step_2]:
     Source: 'tests/src/step_by.rs', lines 69:0-74:1
     Visibility: public -/
-def test_step_by_single_step_2 : Result Unit := do
+def test_step_by_single_step_2 : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 1#usize [ 42#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -224,7 +224,7 @@ def test_step_by_single_step_2 : Result Unit := do
 /-- [step_by::test_step_by_eq_len]:
     Source: 'tests/src/step_by.rs', lines 78:0-83:1
     Visibility: public -/
-def test_step_by_eq_len : Result Unit := do
+def test_step_by_eq_len : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 0#u32, 1#u32, 2#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -247,7 +247,7 @@ def test_step_by_eq_len : Result Unit := do
 /-- [step_by::test_step_by_len_minus_1]:
     Source: 'tests/src/step_by.rs', lines 87:0-93:1
     Visibility: public -/
-def test_step_by_len_minus_1 : Result Unit := do
+def test_step_by_len_minus_1 : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 0#u32, 1#u32, 2#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -275,7 +275,7 @@ def test_step_by_len_minus_1 : Result Unit := do
 /-- [step_by::test_step_by_two_elements]:
     Source: 'tests/src/step_by.rs', lines 97:0-102:1
     Visibility: public -/
-def test_step_by_two_elements : Result Unit := do
+def test_step_by_two_elements : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 2#usize [ 0#u32, 1#u32 ]))
   let i ← core.slice.Slice.iter s
   let it ←
@@ -298,7 +298,7 @@ def test_step_by_two_elements : Result Unit := do
 /-- [step_by::test_step_by_4_on_longer]:
     Source: 'tests/src/step_by.rs', lines 106:0-113:1
     Visibility: public -/
-def test_step_by_4_on_longer : Result Unit := do
+def test_step_by_4_on_longer : RustM Unit := do
   let s ←
     lift (Array.to_slice
       (Array.make 12#usize [

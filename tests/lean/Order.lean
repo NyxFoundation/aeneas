@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -24,21 +24,21 @@ namespace order
     Visibility: public -/
 def compare
   {T : Type} (corecmpOrdInst : core.cmp.Ord T) (x : T) (y : T) :
-  Result Ordering
+  RustM Ordering
   := do
   corecmpOrdInst.cmp x y
 
 /-- [order::u32_compare]:
     Source: 'tests/src/order.rs', lines 11:0-13:1
     Visibility: public -/
-def u32_compare (x : Std.U32) (y : Std.U32) : Result Ordering := do
+def u32_compare (x : Std.U32) (y : Std.U32) : RustM Ordering := do
   ok (core.cmp.impls.OrdU32.cmp x y)
 
 /-- [order::u64_partial_cmp]:
     Source: 'tests/src/order.rs', lines 15:0-17:1
     Visibility: public -/
 def u64_partial_cmp
-  (x : Std.U64) (y : Std.U64) : Result (Option Ordering) := do
+  (x : Std.U64) (y : Std.U64) : RustM (Option Ordering) := do
   ok (core.cmp.impls.PartialOrdU64.partial_cmp x y)
 
 /-- [order::Wrap]
@@ -58,7 +58,7 @@ def Wrap.Insts.CoreMarkerStructuralPartialEq : core.marker.StructuralPartialEq
     Source: 'tests/src/order.rs', lines 23:9-23:18
     Visibility: public -/
 def Wrap.Insts.CoreCmpPartialEqWrap.eq
-  (self : Wrap) (other : Wrap) : Result Bool := do
+  (self : Wrap) (other : Wrap) : RustM Bool := do
   ok (self = other)
 
 /-- Trait implementation: [order::{impl core::cmp::PartialEq<order::Wrap> for order::Wrap}]
@@ -71,7 +71,7 @@ def Wrap.Insts.CoreCmpPartialEqWrap : core.cmp.PartialEq Wrap Wrap := {
 /-- [order::{impl core::cmp::Eq for order::Wrap}::assert_fields_are_eq]:
     Source: 'tests/src/order.rs', lines 23:20-23:22
     Visibility: public -/
-def Wrap.Insts.CoreCmpEq.assert_fields_are_eq (self : Wrap) : Result Unit := do
+def Wrap.Insts.CoreCmpEq.assert_fields_are_eq (self : Wrap) : RustM Unit := do
   ok ()
 
 /-- Trait implementation: [order::{impl core::cmp::Eq for order::Wrap}]
@@ -86,14 +86,14 @@ def Wrap.Insts.CoreCmpEq : core.cmp.Eq Wrap := {
     Source: 'tests/src/order.rs', lines 23:36-23:39
     Visibility: public -/
 def Wrap.Insts.CoreCmpOrd.cmp
-  (self : Wrap) (other : Wrap) : Result Ordering := do
+  (self : Wrap) (other : Wrap) : RustM Ordering := do
   ok (core.cmp.impls.OrdU64.cmp self other)
 
 /-- [order::{impl core::cmp::PartialOrd<order::Wrap> for order::Wrap}::partial_cmp]:
     Source: 'tests/src/order.rs', lines 23:24-23:34
     Visibility: public -/
 def Wrap.Insts.CoreCmpPartialOrdWrap.partial_cmp
-  (self : Wrap) (other : Wrap) : Result (Option Ordering) := do
+  (self : Wrap) (other : Wrap) : RustM (Option Ordering) := do
   let o ← Wrap.Insts.CoreCmpOrd.cmp self other
   ok (some o)
 
@@ -124,19 +124,19 @@ impl_def Wrap.Insts.CoreCmpOrd : core.cmp.Ord Wrap := {
 /-- [order::wrap_partial_cmp]:
     Source: 'tests/src/order.rs', lines 26:0-28:1
     Visibility: public -/
-def wrap_partial_cmp (x : Wrap) (y : Wrap) : Result (Option Ordering) := do
+def wrap_partial_cmp (x : Wrap) (y : Wrap) : RustM (Option Ordering) := do
   Wrap.Insts.CoreCmpPartialOrdWrap.partial_cmp x y
 
 /-- [order::wrap_cmp]:
     Source: 'tests/src/order.rs', lines 30:0-32:1
     Visibility: public -/
-def wrap_cmp (x : Wrap) (y : Wrap) : Result Ordering := do
+def wrap_cmp (x : Wrap) (y : Wrap) : RustM Ordering := do
   Wrap.Insts.CoreCmpOrd.cmp x y
 
 /-- [order::test_wrap_lt]:
     Source: 'tests/src/order.rs', lines 39:0-43:1
     Visibility: public -/
-def test_wrap_lt : Result Unit := do
+def test_wrap_lt : RustM Unit := do
   let b ←
     core.cmp.PartialOrd.lt.trait_default Wrap.Insts.CoreCmpPartialOrdWrap 1#u64
       2#u64
@@ -156,7 +156,7 @@ def test_wrap_lt : Result Unit := do
 /-- [order::test_wrap_le]:
     Source: 'tests/src/order.rs', lines 46:0-50:1
     Visibility: public -/
-def test_wrap_le : Result Unit := do
+def test_wrap_le : RustM Unit := do
   let b ←
     core.cmp.PartialOrd.le.trait_default Wrap.Insts.CoreCmpPartialOrdWrap 1#u64
       2#u64
@@ -176,7 +176,7 @@ def test_wrap_le : Result Unit := do
 /-- [order::test_wrap_gt]:
     Source: 'tests/src/order.rs', lines 53:0-57:1
     Visibility: public -/
-def test_wrap_gt : Result Unit := do
+def test_wrap_gt : RustM Unit := do
   let b ←
     core.cmp.PartialOrd.gt.trait_default Wrap.Insts.CoreCmpPartialOrdWrap 2#u64
       1#u64
@@ -196,7 +196,7 @@ def test_wrap_gt : Result Unit := do
 /-- [order::test_wrap_ge]:
     Source: 'tests/src/order.rs', lines 60:0-64:1
     Visibility: public -/
-def test_wrap_ge : Result Unit := do
+def test_wrap_ge : RustM Unit := do
   let b ←
     core.cmp.PartialOrd.ge.trait_default Wrap.Insts.CoreCmpPartialOrdWrap 2#u64
       1#u64
@@ -216,7 +216,7 @@ def test_wrap_ge : Result Unit := do
 /-- [order::test_wrap_max]:
     Source: 'tests/src/order.rs', lines 67:0-71:1
     Visibility: public -/
-def test_wrap_max : Result Unit := do
+def test_wrap_max : RustM Unit := do
   let w ← core.cmp.Ord.max.trait_default Wrap.Insts.CoreCmpOrd 1#u64 2#u64
   let b ← Wrap.Insts.CoreCmpPartialEqWrap.eq w 2#u64
   massert b
@@ -233,7 +233,7 @@ def test_wrap_max : Result Unit := do
 /-- [order::test_wrap_min]:
     Source: 'tests/src/order.rs', lines 74:0-78:1
     Visibility: public -/
-def test_wrap_min : Result Unit := do
+def test_wrap_min : RustM Unit := do
   let w ← core.cmp.Ord.min.trait_default Wrap.Insts.CoreCmpOrd 1#u64 2#u64
   let b ← Wrap.Insts.CoreCmpPartialEqWrap.eq w 1#u64
   massert b
@@ -250,7 +250,7 @@ def test_wrap_min : Result Unit := do
 /-- [order::test_wrap_clamp]:
     Source: 'tests/src/order.rs', lines 81:0-85:1
     Visibility: public -/
-def test_wrap_clamp : Result Unit := do
+def test_wrap_clamp : RustM Unit := do
   let w ←
     core.cmp.Ord.clamp.trait_default Wrap.Insts.CoreCmpOrd 0#u64 1#u64 3#u64
   let b ← Wrap.Insts.CoreCmpPartialEqWrap.eq w 1#u64
@@ -287,7 +287,7 @@ def Rank.Insts.CoreMarkerStructuralPartialEq : core.marker.StructuralPartialEq
     Source: 'tests/src/order.rs', lines 87:9-87:18
     Visibility: public -/
 def Rank.Insts.CoreCmpPartialEqRank.eq
-  (self : Rank) (other : Rank) : Result Bool := do
+  (self : Rank) (other : Rank) : RustM Bool := do
   let self1 := read_discriminant self
   let other1 := read_discriminant other
   ok (self1 = other1)
@@ -312,7 +312,7 @@ impl_def Rank.Insts.CoreCmpEq : core.cmp.Eq Rank := {
     Source: 'tests/src/order.rs', lines 87:36-87:39
     Visibility: public -/
 def Rank.Insts.CoreCmpOrd.cmp
-  (self : Rank) (other : Rank) : Result Ordering := do
+  (self : Rank) (other : Rank) : RustM Ordering := do
   let self1 := read_discriminant self
   let other1 := read_discriminant other
   ok (core.cmp.impls.OrdIsize.cmp self1 other1)
@@ -321,7 +321,7 @@ def Rank.Insts.CoreCmpOrd.cmp
     Source: 'tests/src/order.rs', lines 87:24-87:34
     Visibility: public -/
 def Rank.Insts.CoreCmpPartialOrdRank.partial_cmp
-  (self : Rank) (other : Rank) : Result (Option Ordering) := do
+  (self : Rank) (other : Rank) : RustM (Option Ordering) := do
   let o ← Rank.Insts.CoreCmpOrd.cmp self other
   ok (some o)
 
@@ -352,7 +352,7 @@ impl_def Rank.Insts.CoreCmpOrd : core.cmp.Ord Rank := {
 /-- [order::test_rank_lt]:
     Source: 'tests/src/order.rs', lines 95:0-99:1
     Visibility: public -/
-def test_rank_lt : Result Unit := do
+def test_rank_lt : RustM Unit := do
   let b ←
     core.cmp.PartialOrd.lt.trait_default Rank.Insts.CoreCmpPartialOrdRank
       Rank.Low Rank.High
@@ -381,7 +381,7 @@ inductive Num where
     Source: 'tests/src/order.rs', lines 111:4-116:5
     Visibility: public -/
 def Num.Insts.CoreCmpPartialEqNum.eq
-  (self : Num) (other : Num) : Result Bool := do
+  (self : Num) (other : Num) : RustM Bool := do
   match self with
   | Num.Val a =>
     match other with
@@ -400,7 +400,7 @@ def Num.Insts.CoreCmpPartialEqNum : core.cmp.PartialEq Num Num := {
     Source: 'tests/src/order.rs', lines 120:4-125:5
     Visibility: public -/
 def Num.Insts.CoreCmpPartialOrdNum.partial_cmp
-  (self : Num) (other : Num) : Result (Option Ordering) := do
+  (self : Num) (other : Num) : RustM (Option Ordering) := do
   match self with
   | Num.Val a =>
     match other with
@@ -423,7 +423,7 @@ impl_def Num.Insts.CoreCmpPartialOrdNum : core.cmp.PartialOrd Num Num := {
 /-- [order::test_num_incomparable]:
     Source: 'tests/src/order.rs', lines 129:0-135:1
     Visibility: public -/
-def test_num_incomparable : Result Unit := do
+def test_num_incomparable : RustM Unit := do
   let b ←
     core.cmp.PartialOrd.lt.trait_default Num.Insts.CoreCmpPartialOrdNum Num.Nan
       (Num.Val 1#u8)
@@ -451,7 +451,7 @@ def test_num_incomparable : Result Unit := do
 /-- [order::test_wrap_ref_lt]:
     Source: 'tests/src/order.rs', lines 142:0-147:1
     Visibility: public -/
-def test_wrap_ref_lt : Result Unit := do
+def test_wrap_ref_lt : RustM Unit := do
   let b ←
     core.cmp.impls.PartialOrdShared.lt Wrap.Insts.CoreCmpPartialOrdWrap 1#u64
       2#u64
@@ -467,7 +467,7 @@ def test_wrap_ref_lt : Result Unit := do
 /-- [order::test_wrap_ref_le]:
     Source: 'tests/src/order.rs', lines 150:0-155:1
     Visibility: public -/
-def test_wrap_ref_le : Result Unit := do
+def test_wrap_ref_le : RustM Unit := do
   let b ←
     core.cmp.impls.PartialOrdShared.le Wrap.Insts.CoreCmpPartialOrdWrap 1#u64
       2#u64
@@ -483,7 +483,7 @@ def test_wrap_ref_le : Result Unit := do
 /-- [order::test_wrap_ref_gt]:
     Source: 'tests/src/order.rs', lines 158:0-163:1
     Visibility: public -/
-def test_wrap_ref_gt : Result Unit := do
+def test_wrap_ref_gt : RustM Unit := do
   let b ←
     core.cmp.impls.PartialOrdShared.gt Wrap.Insts.CoreCmpPartialOrdWrap 2#u64
       1#u64
@@ -499,7 +499,7 @@ def test_wrap_ref_gt : Result Unit := do
 /-- [order::test_wrap_ref_ge]:
     Source: 'tests/src/order.rs', lines 166:0-171:1
     Visibility: public -/
-def test_wrap_ref_ge : Result Unit := do
+def test_wrap_ref_ge : RustM Unit := do
   let b ←
     core.cmp.impls.PartialOrdShared.ge Wrap.Insts.CoreCmpPartialOrdWrap 2#u64
       1#u64
@@ -515,7 +515,7 @@ def test_wrap_ref_ge : Result Unit := do
 /-- [order::test_wrap_ref_partial_cmp]:
     Source: 'tests/src/order.rs', lines 174:0-182:1
     Visibility: public -/
-def test_wrap_ref_partial_cmp : Result Unit := do
+def test_wrap_ref_partial_cmp : RustM Unit := do
   let o ←
     core.cmp.impls.PartialOrdShared.partial_cmp
       Wrap.Insts.CoreCmpPartialOrdWrap 1#u64 2#u64
@@ -543,7 +543,7 @@ structure Keyed where
     Source: 'tests/src/order.rs', lines 194:4-196:5
     Visibility: public -/
 def Keyed.Insts.CoreCmpPartialEqKeyed.eq
-  (self : Keyed) (other : Keyed) : Result Bool := do
+  (self : Keyed) (other : Keyed) : RustM Bool := do
   ok (self.key = other.key)
 
 /-- Trait implementation: [order::{impl core::cmp::PartialEq<order::Keyed> for order::Keyed}]
@@ -566,14 +566,14 @@ impl_def Keyed.Insts.CoreCmpEq : core.cmp.Eq Keyed := {
     Source: 'tests/src/order.rs', lines 208:4-210:5
     Visibility: public -/
 def Keyed.Insts.CoreCmpOrd.cmp
-  (self : Keyed) (other : Keyed) : Result Ordering := do
+  (self : Keyed) (other : Keyed) : RustM Ordering := do
   ok (core.cmp.impls.OrdU8.cmp self.key other.key)
 
 /-- [order::{impl core::cmp::PartialOrd<order::Keyed> for order::Keyed}::partial_cmp]:
     Source: 'tests/src/order.rs', lines 202:4-204:5
     Visibility: public -/
 def Keyed.Insts.CoreCmpPartialOrdKeyed.partial_cmp
-  (self : Keyed) (other : Keyed) : Result (Option Ordering) := do
+  (self : Keyed) (other : Keyed) : RustM (Option Ordering) := do
   let o ← Keyed.Insts.CoreCmpOrd.cmp self other
   ok (some o)
 
@@ -605,7 +605,7 @@ impl_def Keyed.Insts.CoreCmpOrd : core.cmp.Ord Keyed := {
 /-- [order::test_keyed_max_tie]:
     Source: 'tests/src/order.rs', lines 215:0-219:1
     Visibility: public -/
-def test_keyed_max_tie : Result Unit := do
+def test_keyed_max_tie : RustM Unit := do
   let k ←
     core.cmp.Ord.max.trait_default Keyed.Insts.CoreCmpOrd
       { key := 1#u8, tag := 0#u8 } { key := 1#u8, tag := 1#u8 }
@@ -617,7 +617,7 @@ def test_keyed_max_tie : Result Unit := do
 /-- [order::test_keyed_min_tie]:
     Source: 'tests/src/order.rs', lines 223:0-227:1
     Visibility: public -/
-def test_keyed_min_tie : Result Unit := do
+def test_keyed_min_tie : RustM Unit := do
   let k ←
     core.cmp.Ord.min.trait_default Keyed.Insts.CoreCmpOrd
       { key := 1#u8, tag := 0#u8 } { key := 1#u8, tag := 1#u8 }
@@ -629,7 +629,7 @@ def test_keyed_min_tie : Result Unit := do
 /-- [order::test_keyed_clamp_tie]:
     Source: 'tests/src/order.rs', lines 231:0-238:1
     Visibility: public -/
-def test_keyed_clamp_tie : Result Unit := do
+def test_keyed_clamp_tie : RustM Unit := do
   let r ←
     core.cmp.Ord.clamp.trait_default Keyed.Insts.CoreCmpOrd
       { key := 1#u8, tag := 0#u8 } { key := 1#u8, tag := 1#u8 }

@@ -8,7 +8,7 @@ namespace Aeneas
 
 namespace Std
 
-open Result
+open RustM
 
 attribute [rust_type "alloc::string::String" (body := .opaque)] String
 
@@ -25,7 +25,7 @@ def alloc.boxed.Box.deref {T : Type} (x : T) : T := x
 def alloc.boxed.Box.deref_mut {T : Type} (x : T) : (T × (T → T)) := (x, λ x => x)
 
 @[expose, rust_fun "alloc::alloc::{core::clone::Clone<alloc::alloc::Global>}::clone"]
-def alloc.alloc.CloneGlobal.clone (_ : Global) : Result Global := .ok .mk
+def alloc.alloc.CloneGlobal.clone (_ : Global) : RustM Global := .ok .mk
 
 namespace Std
 

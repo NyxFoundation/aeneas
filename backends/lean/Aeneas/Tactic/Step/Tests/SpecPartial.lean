@@ -11,13 +11,13 @@ for `mvcgen`.
 
 namespace Aeneas.Step.SpecPartialTests
 
-open Aeneas Aeneas.Std Result Std.Do WP
+open Aeneas Aeneas.Std RustM Std.Do WP
 
 set_option mvcgen.warning false
 
 /- ## Mock division: panics when dividing by zero, but does not specify `Error`. -/
 
-opaque myDiv (x y : U32) : Result U32
+opaque myDiv (x y : U32) : RustM U32
 
 @[step]
 axiom myDiv_partialSpec (x y : U32) :
@@ -58,7 +58,7 @@ info: Aeneas.Step.SpecPartialTests.myDiv_partialSpec.mvcgen_spec (x y : U32) (Q 
 
 /- ## Mock addition: panics on overflow, specifies `Error.panic` -/
 
-opaque myAdd (x y : U32) : Result U32
+opaque myAdd (x y : U32) : RustM U32
 
 @[step]
 axiom myAdd_partialSpec (x y : U32) :
@@ -86,7 +86,7 @@ info: Aeneas.Step.SpecPartialTests.myAdd_partialSpec.mvcgen_spec (x y : U32) (Q 
 
 /- ## Mock signed add: panics on over- and underflow -/
 
-opaque myAddSigned (x y : I32) : Result I32
+opaque myAddSigned (x y : I32) : RustM I32
 
 @[step]
 axiom myAddSigned_partialSpec (x y : I32) :
@@ -113,7 +113,7 @@ info: Aeneas.Step.SpecPartialTests.myAddSigned_partialSpec.mvcgen_spec (x y : I3
 
 /- ## Mock infinte loop: always diverges -/
 
-opaque infiniteLoop : Result Unit
+opaque infiniteLoop : RustM Unit
 
 @[step]
 axiom infiniteLoop_partialSpec :
@@ -150,7 +150,7 @@ example (x y z : U32) :
 
 /- ## Several error cases in the failure predicate -/
 
-opaque myCheck (x : U32) : Result U32
+opaque myCheck (x : U32) : RustM U32
 
 @[step]
 axiom myCheck_partialSpec (x : U32) :

@@ -7,15 +7,15 @@ public section
 
 namespace Aeneas.Std
 
-open Result
+open RustM
 
 @[rust_trait "core::convert::Into"]
 structure core.convert.Into (Self : Type) (T : Type) where
-  into : Self → Result T
+  into : Self → RustM T
 
 @[expose, reducible, simp, step_simps, rust_fun "core::convert::{core::convert::Into<@T, @U>}::into"]
 def core.convert.IntoFrom.into {T : Type} {U : Type}
-  (fromInst : core.convert.From U T) (x : T) : Result U :=
+  (fromInst : core.convert.From U T) (x : T) : RustM U :=
   fromInst.from x
 
 @[expose, reducible, rust_trait_impl "core::convert::Into<@Self, @T>"]
@@ -26,7 +26,7 @@ def core.convert.IntoFrom {T : Type} {U : Type} (fromInst : core.convert.From U 
 
 @[rust_trait "core::convert::AsRef"]
 structure core.convert.AsRef (Self : Type) (T : Type) where
-  as_ref : Self → Result T
+  as_ref : Self → RustM T
 
 @[expose, simp, step_simps, rust_fun "core::convert::{core::convert::From<@T, @T>}::from" -canFail]
 def core.convert.FromSame.from {T : Type} (x : T) : T := x
@@ -38,21 +38,21 @@ def core.convert.FromSame (T : Type) : core.convert.From T T := {
 
 @[rust_trait "core::convert::TryFrom"]
 structure core.convert.TryFrom (Self T Error : Type) where
-  try_from : T → Result (core.result.Result Self Error)
+  try_from : T → RustM (core.result.Result Self Error)
 
 @[expose, rust_fun "core::convert::{core::convert::TryInto<@T, @U, @Error>}::try_into"]
 def core.convert.TryInto.Blanket.try_into
   {T : Type} {U : Type} {Error : Type} (TryFromInst : core.convert.TryFrom U T Error) (x : T) :
-  Result (core.result.Result U Error) :=
+  RustM (core.result.Result U Error) :=
   TryFromInst.try_from x
 
 @[rust_trait "core::convert::TryInto"]
 structure core.convert.TryInto (Self T Error : Type) where
-  try_into : Self → Result (core.result.Result T Error)
+  try_into : Self → RustM (core.result.Result T Error)
 
 @[expose, reducible, simp]
 def core.convert.TryIntoFrom.try_into {T U Error : Type} (fromInst : core.convert.TryFrom U T Error)
-  (x : T) : Result (core.result.Result U Error) :=
+  (x : T) : RustM (core.result.Result U Error) :=
   fromInst.try_from x
 
 @[expose, reducible, rust_trait_impl "core::convert::{core::convert::TryInto<@T, @U>}"]
@@ -70,7 +70,7 @@ def core.convert.TryInto.Blanket {T U E : Type}
 
 @[rust_trait "core::convert::AsMut"]
 structure core.convert.AsMut (Self : Type) (T : Type) where
-  as_mut : Self → Result (T × (T → Self))
+  as_mut : Self → RustM (T × (T → Self))
 
 @[expose, reducible, rust_trait_impl "core::convert::AsMut<Box<@T>, @T>"]
 def core.convert.AsMutBox (T : Type) : core.convert.AsMut T T := {
@@ -80,7 +80,7 @@ def core.convert.AsMutBox (T : Type) : core.convert.AsMut T T := {
 /-- `Result::is_ok`: `true` on `Ok`, `false` on `Err`. -/
 @[expose, rust_fun "core::result::{core::result::Result<@T, @E>}::is_ok"]
 def core.result.Result.is_ok {T E : Type} :
-    core.result.Result T E → Std.Result Bool
+    core.result.Result T E → Std.RustM Bool
   | .Ok _ => .ok true
   | .Err _ => .ok false
 
@@ -103,7 +103,7 @@ theorem core.result.Result.ok?_Err {T E : Type} (e : E) :
 def core.result.Result.Insts.CoreOpsTry.branch
   {T E : Type} :
   core.result.Result T E →
-    Std.Result (core.ops.control_flow.ControlFlow
+    Std.RustM (core.ops.control_flow.ControlFlow
       (core.result.Result Never E) T)
   | .Ok v => .ok (.Continue v)
   | .Err e => .ok (.Break (.Err e))
@@ -114,7 +114,7 @@ def core.result.Result.Insts.CoreOpsTry.branch
   "core::result::{core::ops::try_trait::FromResidual<core::result::Result<@T, @F>, core::result::Result<!, @E>>}::from_residual"]
 def core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
   (T : Type) {E F : Type} (convertFromInst : core.convert.From F E)
-  (r : core.result.Result Never E) : Std.Result (core.result.Result T F) :=
+  (r : core.result.Result Never E) : Std.RustM (core.result.Result T F) :=
   match r with
   | .Ok x => x.casesOn
   | .Err e => do

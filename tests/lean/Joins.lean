@@ -3,7 +3,7 @@
 module
 public import Aeneas
 @[expose] public section
-open Aeneas Aeneas.Std Result ControlFlow Error
+open Aeneas Aeneas.Std RustM ControlFlow Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
@@ -21,7 +21,7 @@ namespace joins
 
 /-- [joins::opt_add_1]:
     Source: 'tests/src/joins.rs', lines 4:0-7:1 -/
-def opt_add_1 (b : Bool) (x : Std.U32) : Result Std.U32 := do
+def opt_add_1 (b : Bool) (x : Std.U32) : RustM Std.U32 := do
   let y ← if b
             then ok 1#u32
             else ok 0#u32
@@ -29,7 +29,7 @@ def opt_add_1 (b : Bool) (x : Std.U32) : Result Std.U32 := do
 
 /-- [joins::opt_add_2]:
     Source: 'tests/src/joins.rs', lines 9:0-13:1 -/
-def opt_add_2 (b : Bool) (x : Std.U32) : Result Std.U32 := do
+def opt_add_2 (b : Bool) (x : Std.U32) : RustM Std.U32 := do
   let y ← if b
             then ok 1#u32
             else ok 0#u32
@@ -38,13 +38,13 @@ def opt_add_2 (b : Bool) (x : Std.U32) : Result Std.U32 := do
 
 /-- [joins::opt_add_1_or_panic]:
     Source: 'tests/src/joins.rs', lines 15:0-18:1 -/
-def opt_add_1_or_panic (b : Bool) (x : Std.U32) : Result Std.U32 := do
+def opt_add_1_or_panic (b : Bool) (x : Std.U32) : RustM Std.U32 := do
   massert b
   x + 1#u32
 
 /-- [joins::opt_add_switch_1]:
     Source: 'tests/src/joins.rs', lines 20:0-27:1 -/
-def opt_add_switch_1 (a : Std.U32) (x : Std.U32) : Result Std.U32 := do
+def opt_add_switch_1 (a : Std.U32) (x : Std.U32) : RustM Std.U32 := do
   let y ←
     match a with
     | 0#uscalar => ok 0#u32
@@ -54,7 +54,7 @@ def opt_add_switch_1 (a : Std.U32) (x : Std.U32) : Result Std.U32 := do
 
 /-- [joins::opt_add_switch_2]:
     Source: 'tests/src/joins.rs', lines 29:0-35:1 -/
-def opt_add_switch_2 (a : Std.U32) (x : Std.U32) : Result Std.U32 := do
+def opt_add_switch_2 (a : Std.U32) (x : Std.U32) : RustM Std.U32 := do
   match a with
   | 0#uscalar => x + 0#u32
   | _ => fail panic
@@ -69,7 +69,7 @@ inductive Enum where
 
 /-- [joins::use_enum]:
     Source: 'tests/src/joins.rs', lines 43:0-51:1 -/
-def use_enum (e : Enum) (x : Std.U32) : Result Std.U32 := do
+def use_enum (e : Enum) (x : Std.U32) : RustM Std.U32 := do
   let y ←
     match e with
     | Enum.V0 => ok 0#u32
@@ -80,7 +80,7 @@ def use_enum (e : Enum) (x : Std.U32) : Result Std.U32 := do
 /-- [joins::call_choose]:
     Source: 'tests/src/joins.rs', lines 53:0-56:1 -/
 def call_choose
-  (b : Bool) (x : Std.U32) (y : Std.U32) : Result (Std.U32 × Std.U32) := do
+  (b : Bool) (x : Std.U32) (y : Std.U32) : RustM (Std.U32 × Std.U32) := do
   let (z, back) ←
     if b
     then ok (x, fun i => (i, y))
@@ -96,7 +96,7 @@ structure SharedBool where
 /-- [joins::shared_bool_scrutinee]:
     Source: 'tests/src/joins.rs', lines 62:0-69:1 -/
 def shared_bool_scrutinee
-  (k : SharedBool) (x : Std.U32) (y : Std.U32) : Result Std.U32 := do
+  (k : SharedBool) (x : Std.U32) (y : Std.U32) : RustM Std.U32 := do
   let f ← if k.value
             then ok x
             else ok y
@@ -107,7 +107,7 @@ def shared_bool_scrutinee
 /-- [joins::shared_integer_scrutinee]:
     Source: 'tests/src/joins.rs', lines 71:0-82:1 -/
 def shared_integer_scrutinee
-  (n : Std.U8) (x : Std.U32) (y : Std.U32) : Result Std.U32 := do
+  (n : Std.U8) (x : Std.U32) (y : Std.U32) : RustM Std.U32 := do
   let f ← match n with
             | 0#uscalar => ok x
             | _ => ok y
