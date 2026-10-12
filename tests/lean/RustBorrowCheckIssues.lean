@@ -26,8 +26,7 @@ namespace rust_borrow_check_issues
     Source: '/rustc/library/core/src/mem/mod.rs', lines 1045:0-1047:24
     Name pattern: [core::mem::drop]
     Visibility: public -/
-@[rust_fun "core::mem::drop"]
-axiom core.mem.drop {T : Type} : T → RustM Unit
+@[rust_fun "core::mem::drop"] axiom core.mem.drop {T : Type} : T → RustM Unit
 
 /-- [core::option::{core::option::Option<T>}::as_mut]:
     Source: '/rustc/library/core/src/option.rs', lines 766:4-766:52

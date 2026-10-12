@@ -108,9 +108,7 @@ def index_slice {T : Type} (s : Slice T) (i : Std.Usize) : RustM T := do
     Source: 'tests/src/arrays.rs', lines 65:0-67:1
     Visibility: public -/
 def index_mut_slice
-  {T : Type} (s : Slice T) (i : Std.Usize) :
-  RustM (T × (T → Slice T))
-  := do
+  {T : Type} (s : Slice T) (i : Std.Usize) : RustM (T × (T → Slice T)) := do
   Slice.index_mut_usize s i
 
 /-- [arrays::slice_subslice_shared_]:
@@ -699,8 +697,8 @@ def sum_mut_slice
 def add_acc_loop.body
   (paSrc : Array Std.U32 256#usize) (peDst : Array Std.U32 256#usize)
   (i : Std.Usize) :
-  RustM (ControlFlow ((Array Std.U32 256#usize) × (Array Std.U32 256#usize)
-    × Std.Usize) ((Array Std.U32 256#usize) × (Array Std.U32 256#usize)))
+  RustM (ControlFlow ((Array Std.U32 256#usize) × (Array Std.U32 256#usize) ×
+    Std.Usize) ((Array Std.U32 256#usize) × (Array Std.U32 256#usize)))
   := do
   if i < 256#usize
   then

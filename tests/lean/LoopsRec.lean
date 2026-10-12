@@ -33,9 +33,8 @@ partial_fixpoint
 /-- [loops_rec::iter]:
     Source: 'tests/src/loops-rec.rs', lines 6:0-13:1
     Visibility: public -/
-@[reducible]
-def iter (max : Std.U32) : RustM Std.U32 := do
-  iter_loop max 0#u32
+@[reducible] def iter (max : Std.U32) : RustM Std.U32 := do
+               iter_loop max 0#u32
 
 /-- [loops_rec::sum]: loop 0:
     Source: 'tests/src/loops-rec.rs', lines 19:4-22:5
@@ -207,8 +206,7 @@ def list_nth_mut
     Source: 'tests/src/loops-rec.rs', lines 113:4-122:1
     Visibility: public -/
 @[rust_loop]
-def list_nth_shared_loop
-  {T : Type} (ls : List T) (i : Std.U32) : RustM T := do
+def list_nth_shared_loop {T : Type} (ls : List T) (i : Std.U32) : RustM T := do
   match ls with
   | List.Cons x tl =>
     if i = 0#u32
@@ -392,9 +390,7 @@ def list_nth_mut_pair
     Visibility: public -/
 @[rust_loop]
 def list_nth_shared_pair_loop
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   match ls0 with
   | List.Cons x0 tl0 =>
     match ls1 with
@@ -412,9 +408,7 @@ partial_fixpoint
     Visibility: public -/
 @[reducible]
 def list_nth_shared_pair
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   list_nth_shared_pair_loop ls0 ls1 i
 
 /-- [loops_rec::list_nth_mut_pair_merge]: loop 0:
@@ -464,9 +458,7 @@ def list_nth_mut_pair_merge
     Visibility: public -/
 @[rust_loop]
 def list_nth_shared_pair_merge_loop
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   match ls0 with
   | List.Cons x0 tl0 =>
     match ls1 with
@@ -484,9 +476,7 @@ partial_fixpoint
     Visibility: public -/
 @[reducible]
 def list_nth_shared_pair_merge
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   list_nth_shared_pair_merge_loop ls0 ls1 i
 
 /-- [loops_rec::list_nth_mut_shared_pair]: loop 0:
@@ -704,8 +694,7 @@ partial_fixpoint
 
 /-- [loops_rec::issue500_2::bar]:
     Source: 'tests/src/loops-rec.rs', lines 393:4-393:33 -/
-def issue500_2.bar
-  (_a : Array Bool 1#usize) : RustM (Array Bool 1#usize) := do
+def issue500_2.bar (_a : Array Bool 1#usize) : RustM (Array Bool 1#usize) := do
   ok _a
 
 /-- [loops_rec::issue500_2::A]

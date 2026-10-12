@@ -60,8 +60,7 @@ structure SliceWrapper (T : Type) where
 
 /-- [mut_borrow_in_shared_borrow::{mut_borrow_in_shared_borrow::SliceWrapper<'a, T>}::len]:
     Source: 'tests/src/mut-borrow-in-shared-borrow.rs', lines 49:4-51:5 -/
-def SliceWrapper.len
-  {T : Type} (self : SliceWrapper T) : RustM Std.Usize := do
+def SliceWrapper.len {T : Type} (self : SliceWrapper T) : RustM Std.Usize := do
   ok (Slice.len self.buf)
 
 /-- [mut_borrow_in_shared_borrow::{mut_borrow_in_shared_borrow::SliceWrapper<'a, T>}::first]:

@@ -42,9 +42,8 @@ def iter_loop (max : Std.U32) (i : Std.U32) : RustM Std.U32 := do
 /-- [loops::iter]:
     Source: 'tests/src/loops.rs', lines 4:0-11:1
     Visibility: public -/
-@[reducible]
-def iter (max : Std.U32) : RustM Std.U32 := do
-  iter_loop max 0#u32
+@[reducible] def iter (max : Std.U32) : RustM Std.U32 := do
+               iter_loop max 0#u32
 
 /-- [loops::sum]: loop body 0:
     Source: 'tests/src/loops.rs', lines 17:4-20:5
@@ -270,8 +269,7 @@ def list_nth_mut
     Source: 'tests/src/loops.rs', lines 111:4-120:1
     Visibility: public -/
 @[rust_loop]
-def list_nth_shared_loop
-  {T : Type} (ls : List T) (i : Std.U32) : RustM T := do
+def list_nth_shared_loop {T : Type} (ls : List T) (i : Std.U32) : RustM T := do
   match ls with
   | List.Cons x tl =>
     if i = 0#u32
@@ -455,9 +453,7 @@ def list_nth_mut_pair
     Visibility: public -/
 @[rust_loop]
 def list_nth_shared_pair_loop
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   match ls0 with
   | List.Cons x0 tl0 =>
     match ls1 with
@@ -475,9 +471,7 @@ partial_fixpoint
     Visibility: public -/
 @[reducible]
 def list_nth_shared_pair
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   list_nth_shared_pair_loop ls0 ls1 i
 
 /-- [loops::list_nth_mut_pair_merge]: loop 0:
@@ -527,9 +521,7 @@ def list_nth_mut_pair_merge
     Visibility: public -/
 @[rust_loop]
 def list_nth_shared_pair_merge_loop
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   match ls0 with
   | List.Cons x0 tl0 =>
     match ls1 with
@@ -547,9 +539,7 @@ partial_fixpoint
     Visibility: public -/
 @[reducible]
 def list_nth_shared_pair_merge
-  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) :
-  RustM (T × T)
-  := do
+  {T : Type} (ls0 : List T) (ls1 : List T) (i : Std.U32) : RustM (T × T) := do
   list_nth_shared_pair_merge_loop ls0 ls1 i
 
 /-- [loops::list_nth_mut_shared_pair]: loop 0:
@@ -801,8 +791,7 @@ def issue500_1_loop (a : Bool) : RustM Bool := do
 
 /-- [loops::issue500_2::bar]:
     Source: 'tests/src/loops.rs', lines 391:4-391:33 -/
-def issue500_2.bar
-  (_a : Array Bool 1#usize) : RustM (Array Bool 1#usize) := do
+def issue500_2.bar (_a : Array Bool 1#usize) : RustM (Array Bool 1#usize) := do
   ok _a
 
 /-- [loops::issue500_2::A]
@@ -914,8 +903,8 @@ def issue270 (v : List (List Std.U8)) : RustM (Option (List Std.U8)) := do
 def issue400_1_loop.body
   (cond : Bool) (back : Std.I32 → (Std.I32 × Std.I32)) (y : Std.I32)
   (i : Std.I32) :
-  RustM (ControlFlow ((Std.I32 → (Std.I32 × Std.I32)) × Std.I32 ×
-    Std.I32) (Std.I32 × Std.I32))
+  RustM (ControlFlow ((Std.I32 → (Std.I32 × Std.I32)) × Std.I32 × Std.I32)
+    (Std.I32 × Std.I32))
   := do
   if i < 32#i32
   then
@@ -956,9 +945,9 @@ def issue400_2_loop.body
   (conds : Slice Bool)
   (back : Std.I32 → Std.I32 → (Std.I32 × Std.I32 × Std.I32))
   (y : Std.I32) (z : Std.I32) (i : Std.Usize) :
-  RustM (ControlFlow ((Std.I32 → Std.I32 → (Std.I32 × Std.I32 ×
-    Std.I32)) × Std.I32 × Std.I32 × Std.Usize) (Std.I32 × Std.I32 ×
-    (Std.I32 → Std.I32 → (Std.I32 × Std.I32 × Std.I32))))
+  RustM (ControlFlow ((Std.I32 → Std.I32 → (Std.I32 × Std.I32 × Std.I32))
+    × Std.I32 × Std.I32 × Std.Usize) (Std.I32 × Std.I32 × (Std.I32 →
+    Std.I32 → (Std.I32 × Std.I32 × Std.I32))))
   := do
   let i1 := Slice.len conds
   if i < i1

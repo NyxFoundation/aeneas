@@ -153,9 +153,7 @@ def implicit_generics.nothing
 /-- [hax_specs::implicit_generics::of_fst]:
     Source: 'src/lib.rs', lines 153:4-155:5 -/
 def implicit_generics.of_fst
-  {T : Type} (N : Std.Usize) (t : T) :
-  RustM (implicit_generics.Pair T N)
-  := do
+  {T : Type} (N : Std.Usize) (t : T) : RustM (implicit_generics.Pair T N) := do
   ok { fst := t }
 
 /-- [hax_specs::implicit_generics::empty]:
@@ -214,8 +212,7 @@ def basic.only_requires.spec (x : Std.U32) : Prop :=
 /-- [hax_specs::basic::only_ensures::post]:
     Source: 'src/lib.rs', lines 10:4-10:36 -/
 @[reducible]
-def basic.only_ensures.post
-  (x : Std.U32) (result : Std.U32) : RustM Bool := do
+def basic.only_ensures.post (x : Std.U32) (result : Std.U32) : RustM Bool := do
   ok (result = x)
 
 def basic.only_ensures.spec (x : Std.U32) : Prop :=

@@ -474,9 +474,7 @@ impl_def Enum.Insts.CoreCmpPartialEqEnum {T : Type} (corecmpPartialEqInst :
     Source: 'tests/src/derive.rs', lines 24:27-24:29
     Visibility: public -/
 def Enum.Insts.CoreCmpEq.assert_fields_are_eq
-  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : Enum T) :
-  RustM Unit
-  := do
+  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : Enum T) : RustM Unit := do
   ok ()
 
 /-- Trait implementation: [derive::{impl core::cmp::Eq for derive::Enum<T>}]
@@ -603,9 +601,7 @@ impl_def List.Insts.CoreCmpPartialEqList {T : Type} (corecmpPartialEqInst :
     Source: 'tests/src/derive.rs', lines 34:27-34:29
     Visibility: public -/
 def List.Insts.CoreCmpEq.assert_fields_are_eq
-  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : List T) :
-  RustM Unit
-  := do
+  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : List T) : RustM Unit := do
   ok ()
 
 /-- Trait implementation: [derive::{impl core::cmp::Eq for derive::List<T>}]
