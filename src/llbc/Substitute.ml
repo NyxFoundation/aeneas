@@ -7,6 +7,22 @@ open Types
 open Values
 open LlbcAst
 
+(** Runtime value types erase all lifetimes, including 'static. The Charon
+    substitution utility only erases region variables. *)
+let erase_regions (ty : ty) : ty =
+  let visitor =
+    object
+      inherit [_] map_ty
+      method! visit_region _ _ = RErased
+    end
+  in
+  visitor#visit_ty () ty
+
+let type_decl_get_instantiated_field_etypes (def : type_decl)
+    (variant : VariantId.id option) (generics : generic_args) : ty list =
+  List.map erase_regions
+    (type_decl_get_instantiated_field_types def variant generics)
+
 (* Fails if the variable is bound *)
 let expect_free_var span (var : 'id de_bruijn_var) : 'id =
   match var with

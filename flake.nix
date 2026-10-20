@@ -364,6 +364,7 @@
       {
         packages = {
           inherit aeneas aeneas-static aeneas-release aeneas-static-release;
+          aeneas-standalone = aeneas.overrideAttrs (_: { postInstall = ""; });
           inherit charon charon-ml;
           default = aeneas;
         };

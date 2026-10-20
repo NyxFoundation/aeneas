@@ -42,4 +42,60 @@ def use_static.PREFIX : Array Std.U8 1#usize := Array.make 1#usize [ 0#u8 ]
 def use_static : RustM Unit := do
   ok ()
 
+/-- [static::Declaration]
+    Source: 'tests/src/static.rs', lines 45:0-48:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Declaration where
+| Boolean : Declaration
+| Vector : Declaration → Std.Usize → Declaration
+
+/-- [static::{impl core::clone::Clone for static::Declaration}::clone]:
+    Source: 'tests/src/static.rs', lines 44:9-44:14
+    Visibility: public -/
+def Declaration.Insts.CoreCloneClone.clone
+  (self : Declaration) : RustM Declaration := do
+  ok self
+
+/-- Trait implementation: [static::{impl core::clone::Clone for static::Declaration}]
+    Source: 'tests/src/static.rs', lines 44:9-44:14 -/
+@[reducible]
+def Declaration.Insts.CoreCloneClone : core.clone.Clone Declaration := {
+  clone := Declaration.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [static::{impl core::marker::Copy for static::Declaration}]
+    Source: 'tests/src/static.rs', lines 44:16-44:20 -/
+@[reducible]
+def Declaration.Insts.CoreMarkerCopy : core.marker.Copy Declaration := {
+  cloneInst := Declaration.Insts.CoreCloneClone
+}
+
+/-- [static::declaration_width]:
+    Source: 'tests/src/static.rs', lines 50:0-58:1
+    Visibility: public -/
+def declaration_width
+  (declaration : Declaration) : RustM (Option Std.Usize) := do
+  match declaration with
+  | Declaration.Boolean => ok (some 1#usize)
+  | Declaration.Vector element count =>
+    let o ← declaration_width element
+    match o with
+    | none => ok none
+    | some width => ok (Usize.checked_mul width count)
+partial_fixpoint
+
+/-- [static::declaration_valid]:
+    Source: 'tests/src/static.rs', lines 60:0-70:1
+    Visibility: public -/
+def declaration_valid
+  (declaration : Declaration) : RustM (core.result.Result Unit Unit) := do
+  match declaration with
+  | Declaration.Boolean => ok (core.result.Result.Ok ())
+  | Declaration.Vector element count =>
+    if count = 0#usize
+    then ok (core.result.Result.Err ())
+    else declaration_valid element
+partial_fixpoint
+
 end static

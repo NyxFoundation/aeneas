@@ -67,6 +67,11 @@ need to update your Charon repository so that Aeneas builds and runs correctly.
 Finally, building the project simply requires running `make` in the top
 directory.
 
+Consumers that already provide the pinned Charon executable can build only the
+translator with `nix build .#aeneas-standalone`. This target does not bundle or
+build Charon's Rust executable; it still uses the pinned Charon OCaml library.
+The LLBC input must match the version in `charon-pin`.
+
 You can also use `make test` and `make verify` to run the tests, and check
 the generated files. As `make test` will run tests which use the Charon tests,
 you will need to regenerate the `.llbc` files. To do this, run `make setup-charon` before `make

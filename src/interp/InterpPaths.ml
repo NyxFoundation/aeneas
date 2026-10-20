@@ -252,7 +252,7 @@ let rec access_place (span : Meta.span) (access : projection_access)
         let updated_ty = erase_regions updated.ty in
         let v_ty = erase_regions v.ty in
         (* Type checking *)
-        if updated_ty <> v.ty then (
+        if updated_ty <> v_ty then (
           [%ltrace
             "Not the same type:\n- nv.ty: "
             ^ ty_to_string ctx updated_ty
