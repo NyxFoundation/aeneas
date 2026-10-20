@@ -41,6 +41,7 @@ package «tests» {}
 @[default_target] lean_lib DynamicSize
 @[default_target] lean_lib ExtraIncludes
 @[default_target] lean_lib FromTo
+@[default_target] lean_lib GenericTraitConstants
 @[default_target] lean_lib GenericUnitOutput
 @[default_target] lean_lib Hashmap
 @[default_target] lean_lib HigherRankedTraitBounds
