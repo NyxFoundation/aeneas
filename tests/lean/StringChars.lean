@@ -17,10 +17,21 @@ set_option maxRecDepth 2048
 
 namespace string_chars
 
+/-- [string_chars::first_two]:
+    Source: 'tests/src/string-chars.rs', lines 3:0-6:1
+    Visibility: public -/
+def first_two (s : Str) : RustM ((Option Char) × (Option Char)) := do
+  let chars ← core.str.Str.chars s
+  let (o, chars1) ← core.str.iter.IteratorChars.next chars
+  let (o1, _) ← core.str.iter.IteratorChars.next chars1
+  ok (o, o1)
+
 /-- [string_chars::collect]:
-    Source: 'tests/src/string-chars.rs', lines 3:0-6:1 -/
+    Source: 'tests/src/string-chars.rs', lines 8:0-11:1 -/
 def collect : RustM Unit := do
-  let c ← core.str.Str.chars (toStr "hello")
+  let c ←
+    core.str.Str.chars
+      (Str.ofBytes [195#u8, 169#u8, 229#u8, 173#u8, 151#u8, 230#u8, 174#u8, 181#u8, 240#u8, 159#u8, 166#u8, 128#u8] (by scalar_tac) (.intro [Char.ofNat 233, Char.ofNat 23383, Char.ofNat 27573, Char.ofNat 129408] (by decide)))
   let _ ←
     core.iter.traits.iterator.Iterator.collect.default
       core.iter.traits.iterator.IteratorChars
@@ -28,7 +39,7 @@ def collect : RustM Unit := do
   ok ()
 
 /-- [string_chars::print_vec]:
-    Source: 'tests/src/string-chars.rs', lines 8:0-11:1 -/
+    Source: 'tests/src/string-chars.rs', lines 13:0-16:1 -/
 def print_vec : RustM Unit := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 1#i32, 3#i32, 2#i32 ]))
   let v ← alloc.slice.Slice.to_vec core.clone.CloneI32 s

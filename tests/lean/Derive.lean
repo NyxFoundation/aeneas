@@ -116,7 +116,9 @@ def CopyEnumOneVariant.Insts.CoreFmtDebug.fmt
   := do
   let ⟨ __self_0 ⟩ := self
   let __self_01 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugBool) __self_0
-  core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant") __self_01
+  core.fmt.Formatter.debug_tuple_field1_finish f
+    (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116] (by decide)))
+    __self_01
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::CopyEnumOneVariant}]
     Source: 'tests/src/derive.rs', lines 3:37-3:42 -/
@@ -205,10 +207,18 @@ def ScalarEnum.Insts.CoreFmtDebug.fmt
   RustM ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
   := do
   match self with
-  | ScalarEnum.Variant0 => core.fmt.Formatter.write_str f (toStr "Variant0")
-  | ScalarEnum.Variant1 => core.fmt.Formatter.write_str f (toStr "Variant1")
-  | ScalarEnum.Variant2 => core.fmt.Formatter.write_str f (toStr "Variant2")
-  | ScalarEnum.Variant3 => core.fmt.Formatter.write_str f (toStr "Variant3")
+  | ScalarEnum.Variant0 =>
+    core.fmt.Formatter.write_str f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 48#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 48] (by decide)))
+  | ScalarEnum.Variant1 =>
+    core.fmt.Formatter.write_str f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 49#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 49] (by decide)))
+  | ScalarEnum.Variant2 =>
+    core.fmt.Formatter.write_str f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 50#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 50] (by decide)))
+  | ScalarEnum.Variant3 =>
+    core.fmt.Formatter.write_str f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 51#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 51] (by decide)))
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::ScalarEnum}]
     Source: 'tests/src/derive.rs', lines 8:37-8:42 -/
@@ -347,17 +357,25 @@ def CopyEnum.Insts.CoreFmtDebug.fmt
   RustM ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
   := do
   match self with
-  | CopyEnum.Variant0 => core.fmt.Formatter.write_str f (toStr "Variant0")
+  | CopyEnum.Variant0 =>
+    core.fmt.Formatter.write_str f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 48#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 48] (by decide)))
   | CopyEnum.Variant1 __self_0 =>
     let __self_01 :=
       Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugBool) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant1") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 49#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 49] (by decide)))
+      __self_01
   | CopyEnum.Variant2 __self_0 =>
     let __self_01 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU32) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant2") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 50#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 50] (by decide)))
+      __self_01
   | CopyEnum.Variant3 __self_0 =>
     let __self_01 := Dyn.mk _ (core.fmt.DebugShared corefmtDebugInst) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant3") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 51#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 51] (by decide)))
+      __self_01
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::CopyEnum<T>}]
     Source: 'tests/src/derive.rs', lines 16:37-16:42 -/
@@ -500,22 +518,32 @@ def Enum.Insts.CoreFmtDebug.fmt
   RustM ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
   := do
   match self with
-  | Enum.Variant0 => core.fmt.Formatter.write_str f (toStr "Variant0")
+  | Enum.Variant0 =>
+    core.fmt.Formatter.write_str f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 48#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 48] (by decide)))
   | Enum.Variant1 __self_0 =>
     let __self_01 :=
       Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugBool) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant1") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 49#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 49] (by decide)))
+      __self_01
   | Enum.Variant2 __self_0 =>
     let __self_01 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU32) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant2") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 50#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 50] (by decide)))
+      __self_01
   | Enum.Variant3 __self_0 =>
     let __self_01 := Dyn.mk _ (core.fmt.DebugShared corefmtDebugInst) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant3") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 51#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 51] (by decide)))
+      __self_01
   | Enum.Variant4 __self_0 =>
     let __self_01 :=
       Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec corefmtDebugInst))
         __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Variant4") __self_01
+    core.fmt.Formatter.debug_tuple_field1_finish f
+      (Str.ofBytes [86#u8, 97#u8, 114#u8, 105#u8, 97#u8, 110#u8, 116#u8, 52#u8] (by scalar_tac) (.intro [Char.ofNat 86, Char.ofNat 97, Char.ofNat 114, Char.ofNat 105, Char.ofNat 97, Char.ofNat 110, Char.ofNat 116, Char.ofNat 52] (by decide)))
+      __self_01
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::Enum<T>}]
     Source: 'tests/src/derive.rs', lines 24:31-24:36 -/
@@ -725,8 +753,16 @@ def CopyStruct.Insts.CoreFmtDebug.fmt
   let dyn1 := Dyn.mk _ core.fmt.DebugBool self.f1
   let dyn2 := Dyn.mk _ core.fmt.DebugU32 self.f2
   let dyn3 := Dyn.mk _ (core.fmt.DebugShared corefmtDebugInst) self.f3
-  core.fmt.Formatter.debug_struct_field4_finish f (toStr "CopyStruct") (toStr
-    "f0") dyn (toStr "f1") dyn1 (toStr "f2") dyn2 (toStr "f3") dyn3
+  core.fmt.Formatter.debug_struct_field4_finish f
+    (Str.ofBytes [67#u8, 111#u8, 112#u8, 121#u8, 83#u8, 116#u8, 114#u8, 117#u8, 99#u8, 116#u8] (by scalar_tac) (.intro [Char.ofNat 67, Char.ofNat 111, Char.ofNat 112, Char.ofNat 121, Char.ofNat 83, Char.ofNat 116, Char.ofNat 114, Char.ofNat 117, Char.ofNat 99, Char.ofNat 116] (by decide)))
+    (Str.ofBytes [102#u8, 48#u8] (by scalar_tac) (.intro [Char.ofNat 102, Char.ofNat 48] (by decide)))
+    dyn
+    (Str.ofBytes [102#u8, 49#u8] (by scalar_tac) (.intro [Char.ofNat 102, Char.ofNat 49] (by decide)))
+    dyn1
+    (Str.ofBytes [102#u8, 50#u8] (by scalar_tac) (.intro [Char.ofNat 102, Char.ofNat 50] (by decide)))
+    dyn2
+    (Str.ofBytes [102#u8, 51#u8] (by scalar_tac) (.intro [Char.ofNat 102, Char.ofNat 51] (by decide)))
+    dyn3
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::CopyStruct<T>}]
     Source: 'tests/src/derive.rs', lines 41:37-41:42 -/
@@ -816,7 +852,9 @@ def Struct.Insts.CoreFmtDebug.fmt
   := do
   let dyn :=
     Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec corefmtDebugInst)) self.f
-  core.fmt.Formatter.debug_struct_field1_finish f (toStr "Struct") (toStr "f")
+  core.fmt.Formatter.debug_struct_field1_finish f
+    (Str.ofBytes [83#u8, 116#u8, 114#u8, 117#u8, 99#u8, 116#u8] (by scalar_tac) (.intro [Char.ofNat 83, Char.ofNat 116, Char.ofNat 114, Char.ofNat 117, Char.ofNat 99, Char.ofNat 116] (by decide)))
+    (Str.ofBytes [102#u8] (by scalar_tac) (.intro [Char.ofNat 102] (by decide)))
     dyn
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::Struct<T>}]
@@ -928,10 +966,16 @@ def Struct6Fields.Insts.CoreFmtDebug.fmt
   let s ←
     lift (Array.to_slice
       (Array.make 6#usize [
-        toStr "a", toStr "b", toStr "c", toStr "d", toStr "e", toStr "f"
+        Str.ofBytes [97#u8] (by scalar_tac) (.intro [Char.ofNat 97] (by decide)),
+        Str.ofBytes [98#u8] (by scalar_tac) (.intro [Char.ofNat 98] (by decide)),
+        Str.ofBytes [99#u8] (by scalar_tac) (.intro [Char.ofNat 99] (by decide)),
+        Str.ofBytes [100#u8] (by scalar_tac) (.intro [Char.ofNat 100] (by decide)),
+        Str.ofBytes [101#u8] (by scalar_tac) (.intro [Char.ofNat 101] (by decide)),
+        Str.ofBytes [102#u8] (by scalar_tac) (.intro [Char.ofNat 102] (by decide))
         ]))
-  core.fmt.Formatter.debug_struct_fields_finish f (toStr "Struct6Fields") s
-    values
+  core.fmt.Formatter.debug_struct_fields_finish f
+    (Str.ofBytes [83#u8, 116#u8, 114#u8, 117#u8, 99#u8, 116#u8, 54#u8, 70#u8, 105#u8, 101#u8, 108#u8, 100#u8, 115#u8] (by scalar_tac) (.intro [Char.ofNat 83, Char.ofNat 116, Char.ofNat 114, Char.ofNat 117, Char.ofNat 99, Char.ofNat 116, Char.ofNat 54, Char.ofNat 70, Char.ofNat 105, Char.ofNat 101, Char.ofNat 108, Char.ofNat 100, Char.ofNat 115] (by decide)))
+    s values
 
 /-- Trait implementation: [derive::{impl core::fmt::Debug for derive::Struct6Fields}]
     Source: 'tests/src/derive.rs', lines 54:31-54:36 -/

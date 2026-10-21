@@ -7,35 +7,51 @@ open Config
 include ExtractBase
 module T = Types
 
-let extract_str (_span : Meta.span) (fmt : F.formatter) ~(inside : bool)
-    (s : string) : unit =
-  let chars = StringUtils.string_to_chars s in
-  let escape_char =
-    match backend () with
-    | Lean -> (
-        (* Rust strings and Lean source are UTF-8. Preserve non-ASCII bytes
-           verbatim: escaping each byte as a Unicode code point would change
-           the string. Lean does not accept OCaml decimal escapes either. *)
-        function
-        | '"' -> "\\\""
-        | '\\' -> "\\\\"
-        | '\n' -> "\\n"
-        | '\r' -> "\\r"
-        | '\t' -> "\\t"
-        | c when Char.code c < 0x20 || Char.code c = 0x7f ->
-            Printf.sprintf "\\x%02x" (Char.code c)
-        | c -> String.make 1 c)
-    | FStar | Coq | HOL4 -> Char.escaped
+(** Decode only to supply a proof witness. Lean's kernel checks that the
+    standard UTF-8 encoder applied to this witness equals the explicit bytes;
+    the OCaml decoder is not a trusted validity/equality certificate. *)
+let utf8_scalar_values (span : Meta.span) (s : string) : int list =
+  let rec decode i acc =
+    if i = String.length s then List.rev acc
+    else
+      let d = String.get_utf_8_uchar s i in
+      [%cassert] span
+        (Uchar.utf_decode_is_valid d)
+        "Invalid UTF-8 in a Rust str literal";
+      decode
+        (i + Uchar.utf_decode_length d)
+        (Uchar.to_int (Uchar.utf_decode_uchar d) :: acc)
   in
-  let s = String.concat "" (List.map escape_char chars) in
-  let s = "\"" ^ s ^ "\"" in
+  decode 0 []
 
-  (* We need to convert the string to a str (the conversion inserts a static check
-     that the string is not too long) *)
+let extract_lean_str (span : Meta.span) (fmt : F.formatter) (s : string) : unit
+    =
+  let bytes =
+    StringUtils.string_to_chars s
+    |> List.map (fun c -> string_of_int (Char.code c) ^ "#u8")
+    |> String.concat ", "
+  in
+  let scalars =
+    utf8_scalar_values span s
+    |> List.map (fun c -> "Char.ofNat " ^ string_of_int c)
+    |> String.concat ", "
+  in
+  F.pp_print_string fmt
+    ("Str.ofBytes [" ^ bytes ^ "] (by scalar_tac) (.intro [" ^ scalars
+   ^ "] (by decide))")
+
+let extract_str (span : Meta.span) (fmt : F.formatter) ~(inside : bool)
+    (s : string) : unit =
   if inside then F.pp_print_string fmt "(";
-  F.pp_print_string fmt "toStr";
-  F.pp_print_space fmt ();
-  F.pp_print_string fmt s;
+  (match backend () with
+  | Lean -> extract_lean_str span fmt s
+  | FStar | Coq | HOL4 ->
+      (* Preserve the other backends' existing literal representation. *)
+      let chars = StringUtils.string_to_chars s in
+      let s = String.concat "" (List.map Char.escaped chars) in
+      F.pp_print_string fmt "toStr";
+      F.pp_print_space fmt ();
+      F.pp_print_string fmt ("\"" ^ s ^ "\""));
   if inside then F.pp_print_string fmt ")"
 
 (** Format a constant value.

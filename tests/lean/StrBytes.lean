@@ -23,85 +23,129 @@ namespace str_bytes
 def bytes (s : Str) : RustM (Slice Std.U8) := do
   core.str.Str.as_bytes s
 
+/-- [str_bytes::original]:
+    Source: 'tests/src/str-bytes.rs', lines 10:0-12:1
+    Visibility: public -/
+def original (s : Str) : RustM Str := do
+  ok s
+
 /-- [str_bytes::shared_from_mut]:
-    Source: 'tests/src/str-bytes.rs', lines 9:0-11:1
+    Source: 'tests/src/str-bytes.rs', lines 14:0-16:1
     Visibility: public -/
 def shared_from_mut (s : Str) : RustM ((Slice Std.U8) × Str) := do
   let s1 ← core.str.Str.as_bytes s
   ok (s1, s)
 
 /-- [str_bytes::aliases]:
-    Source: 'tests/src/str-bytes.rs', lines 13:0-18:1
+    Source: 'tests/src/str-bytes.rs', lines 18:0-23:1
     Visibility: public -/
 def aliases (s : Str) : RustM (Str × (Slice Std.U8) × (Slice Std.U8)) := do
   let first ← core.str.Str.as_bytes s
   ok (s, first, first)
 
 /-- [str_bytes::loan_retention]:
-    Source: 'tests/src/str-bytes.rs', lines 22:0-26:1
+    Source: 'tests/src/str-bytes.rs', lines 27:0-31:1
     Visibility: public -/
 def loan_retention (s : Str) : RustM Std.Usize := do
-  let (original, first, second) ← aliases s
+  let (original1, first, second) ← aliases s
   let i := Slice.len first
   let i1 := Slice.len second
   let length ← i + i1
-  let s1 ← core.str.Str.as_bytes original
+  let s1 ← core.str.Str.as_bytes original1
   let i2 := Slice.len s1
   length + i2
 
 /-- [str_bytes::literal_checks]:
-    Source: 'tests/src/str-bytes.rs', lines 29:0-56:1
+    Source: 'tests/src/str-bytes.rs', lines 34:0-75:1
     Visibility: public -/
 def literal_checks : RustM Unit := do
-  let a ← core.str.Str.as_bytes (toStr "name")
+  let a ←
+    core.str.Str.as_bytes
+      (Str.ofBytes [110#u8, 97#u8, 109#u8, 101#u8] (by scalar_tac) (.intro [Char.ofNat 110, Char.ofNat 97, Char.ofNat 109, Char.ofNat 101] (by decide)))
   let i := Slice.len a
   massert (i = 4#usize)
   let i1 ← Slice.index_usize a 0#usize
   massert (i1 = 110#u8)
   let i2 ← Slice.index_usize a 3#usize
   massert (i2 = 101#u8)
-  let u ← core.str.Str.as_bytes (toStr "é字段🦀")
+  let s ←
+    original
+      (Str.ofBytes [195#u8, 169#u8, 229#u8, 173#u8, 151#u8, 230#u8, 174#u8, 181#u8, 240#u8, 159#u8, 166#u8, 128#u8] (by scalar_tac) (.intro [Char.ofNat 233, Char.ofNat 23383, Char.ofNat 27573, Char.ofNat 129408] (by decide)))
+  let u ← core.str.Str.as_bytes s
   let i3 := Slice.len u
   massert (i3 = 12#usize)
   let i4 ← Slice.index_usize u 0#usize
   massert (i4 = 195#u8)
   let i5 ← Slice.index_usize u 1#usize
   massert (i5 = 169#u8)
-  let i6 ← Slice.index_usize u 8#usize
-  massert (i6 = 240#u8)
-  let i7 ← Slice.index_usize u 11#usize
-  massert (i7 = 128#u8)
-  let z ← core.str.Str.as_bytes (toStr "a\x00é")
-  let i8 := Slice.len z
-  massert (i8 = 4#usize)
-  let i9 ← Slice.index_usize z 0#usize
-  massert (i9 = 97#u8)
-  let i10 ← Slice.index_usize z 1#usize
-  massert (i10 = 0#u8)
-  let i11 ← Slice.index_usize z 2#usize
-  massert (i11 = 195#u8)
-  let i12 ← Slice.index_usize z 3#usize
-  massert (i12 = 169#u8)
-  let s ← bytes (toStr "")
-  let i13 := Slice.len s
-  massert (i13 = 0#usize)
-  let escaped ← core.str.Str.as_bytes (toStr "\"\\\n\r\t\x07\x7f")
-  let i14 := Slice.len escaped
-  massert (i14 = 7#usize)
-  let i15 ← Slice.index_usize escaped 0#usize
-  massert (i15 = 34#u8)
-  let i16 ← Slice.index_usize escaped 1#usize
-  massert (i16 = 92#u8)
-  let i17 ← Slice.index_usize escaped 2#usize
-  massert (i17 = 10#u8)
-  let i18 ← Slice.index_usize escaped 3#usize
-  massert (i18 = 13#u8)
-  let i19 ← Slice.index_usize escaped 4#usize
-  massert (i19 = 9#u8)
-  let i20 ← Slice.index_usize escaped 5#usize
-  massert (i20 = 7#u8)
-  let i21 ← Slice.index_usize escaped 6#usize
-  massert (i21 = 127#u8)
+  let i6 ← Slice.index_usize u 2#usize
+  massert (i6 = 229#u8)
+  let i7 ← Slice.index_usize u 3#usize
+  massert (i7 = 173#u8)
+  let i8 ← Slice.index_usize u 4#usize
+  massert (i8 = 151#u8)
+  let i9 ← Slice.index_usize u 5#usize
+  massert (i9 = 230#u8)
+  let i10 ← Slice.index_usize u 6#usize
+  massert (i10 = 174#u8)
+  let i11 ← Slice.index_usize u 7#usize
+  massert (i11 = 181#u8)
+  let i12 ← Slice.index_usize u 8#usize
+  massert (i12 = 240#u8)
+  let i13 ← Slice.index_usize u 9#usize
+  massert (i13 = 159#u8)
+  let i14 ← Slice.index_usize u 10#usize
+  massert (i14 = 166#u8)
+  let i15 ← Slice.index_usize u 11#usize
+  massert (i15 = 128#u8)
+  let z ←
+    core.str.Str.as_bytes
+      (Str.ofBytes [97#u8, 0#u8, 195#u8, 169#u8] (by scalar_tac) (.intro [Char.ofNat 97, Char.ofNat 0, Char.ofNat 233] (by decide)))
+  let i16 := Slice.len z
+  massert (i16 = 4#usize)
+  let i17 ← Slice.index_usize z 0#usize
+  massert (i17 = 97#u8)
+  let i18 ← Slice.index_usize z 1#usize
+  massert (i18 = 0#u8)
+  let i19 ← Slice.index_usize z 2#usize
+  massert (i19 = 195#u8)
+  let i20 ← Slice.index_usize z 3#usize
+  massert (i20 = 169#u8)
+  let s1 ← bytes (Str.ofBytes [] (by scalar_tac) (.intro [] (by decide)))
+  let i21 := Slice.len s1
+  massert (i21 = 0#usize)
+  let escaped ←
+    core.str.Str.as_bytes
+      (Str.ofBytes [34#u8, 92#u8, 10#u8, 13#u8, 9#u8, 7#u8, 127#u8] (by scalar_tac) (.intro [Char.ofNat 34, Char.ofNat 92, Char.ofNat 10, Char.ofNat 13, Char.ofNat 9, Char.ofNat 7, Char.ofNat 127] (by decide)))
+  let i22 := Slice.len escaped
+  massert (i22 = 7#usize)
+  let i23 ← Slice.index_usize escaped 0#usize
+  massert (i23 = 34#u8)
+  let i24 ← Slice.index_usize escaped 1#usize
+  massert (i24 = 92#u8)
+  let i25 ← Slice.index_usize escaped 2#usize
+  massert (i25 = 10#u8)
+  let i26 ← Slice.index_usize escaped 3#usize
+  massert (i26 = 13#u8)
+  let i27 ← Slice.index_usize escaped 4#usize
+  massert (i27 = 9#u8)
+  let i28 ← Slice.index_usize escaped 5#usize
+  massert (i28 = 7#u8)
+  let i29 ← Slice.index_usize escaped 6#usize
+  massert (i29 = 127#u8)
+  let limits ←
+    core.str.Str.as_bytes
+      (Str.ofBytes [223#u8, 191#u8, 224#u8, 160#u8, 128#u8, 237#u8, 159#u8, 191#u8, 238#u8, 128#u8, 128#u8, 244#u8, 143#u8, 191#u8, 191#u8] (by scalar_tac) (.intro [Char.ofNat 2047, Char.ofNat 2048, Char.ofNat 55295, Char.ofNat 57344, Char.ofNat 1114111] (by decide)))
+  let i30 := Slice.len limits
+  massert (i30 = 15#usize)
+  let i31 ← Slice.index_usize limits 0#usize
+  massert (i31 = 223#u8)
+  let i32 ← Slice.index_usize limits 1#usize
+  massert (i32 = 191#u8)
+  let i33 ← Slice.index_usize limits 11#usize
+  massert (i33 = 244#u8)
+  let i34 ← Slice.index_usize limits 14#usize
+  massert (i34 = 191#u8)
 
 /- Unit test for [str_bytes::literal_checks] -/
 #assert (literal_checks == ok ())

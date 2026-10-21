@@ -73,21 +73,45 @@ def names_equal_ref_trait (left : Str) (right : Str) : RustM Bool := do
     Source: 'tests/src/str-equality.rs', lines 25:0-34:1
     Visibility: public -/
 def literal_checks : RustM Unit := do
-  let b ← names_equal (toStr "name") (toStr "name")
+  let b ←
+    names_equal
+      (Str.ofBytes [110#u8, 97#u8, 109#u8, 101#u8] (by scalar_tac) (.intro [Char.ofNat 110, Char.ofNat 97, Char.ofNat 109, Char.ofNat 101] (by decide)))
+      (Str.ofBytes [110#u8, 97#u8, 109#u8, 101#u8] (by scalar_tac) (.intro [Char.ofNat 110, Char.ofNat 97, Char.ofNat 109, Char.ofNat 101] (by decide)))
   massert b
-  let b1 ← names_equal (toStr "name") (toStr "names")
+  let b1 ←
+    names_equal
+      (Str.ofBytes [110#u8, 97#u8, 109#u8, 101#u8] (by scalar_tac) (.intro [Char.ofNat 110, Char.ofNat 97, Char.ofNat 109, Char.ofNat 101] (by decide)))
+      (Str.ofBytes [110#u8, 97#u8, 109#u8, 101#u8, 115#u8] (by scalar_tac) (.intro [Char.ofNat 110, Char.ofNat 97, Char.ofNat 109, Char.ofNat 101, Char.ofNat 115] (by decide)))
   massert (¬ b1)
-  let b2 ← names_equal_method (toStr "字段🦀é") (toStr "字段🦀é")
+  let b2 ←
+    names_equal_method
+      (Str.ofBytes [229#u8, 173#u8, 151#u8, 230#u8, 174#u8, 181#u8, 240#u8, 159#u8, 166#u8, 128#u8, 195#u8, 169#u8] (by scalar_tac) (.intro [Char.ofNat 23383, Char.ofNat 27573, Char.ofNat 129408, Char.ofNat 233] (by decide)))
+      (Str.ofBytes [229#u8, 173#u8, 151#u8, 230#u8, 174#u8, 181#u8, 240#u8, 159#u8, 166#u8, 128#u8, 195#u8, 169#u8] (by scalar_tac) (.intro [Char.ofNat 23383, Char.ofNat 27573, Char.ofNat 129408, Char.ofNat 233] (by decide)))
   massert b2
-  let b3 ← names_equal_method (toStr "字段🦀é") (toStr "字段🦀è")
+  let b3 ←
+    names_equal_method
+      (Str.ofBytes [229#u8, 173#u8, 151#u8, 230#u8, 174#u8, 181#u8, 240#u8, 159#u8, 166#u8, 128#u8, 195#u8, 169#u8] (by scalar_tac) (.intro [Char.ofNat 23383, Char.ofNat 27573, Char.ofNat 129408, Char.ofNat 233] (by decide)))
+      (Str.ofBytes [229#u8, 173#u8, 151#u8, 230#u8, 174#u8, 181#u8, 240#u8, 159#u8, 166#u8, 128#u8, 195#u8, 168#u8] (by scalar_tac) (.intro [Char.ofNat 23383, Char.ofNat 27573, Char.ofNat 129408, Char.ofNat 232] (by decide)))
   massert (¬ b3)
-  let b4 ← names_equal_trait (toStr "a\x00b") (toStr "a\x00b")
+  let b4 ←
+    names_equal_trait
+      (Str.ofBytes [97#u8, 0#u8, 98#u8] (by scalar_tac) (.intro [Char.ofNat 97, Char.ofNat 0, Char.ofNat 98] (by decide)))
+      (Str.ofBytes [97#u8, 0#u8, 98#u8] (by scalar_tac) (.intro [Char.ofNat 97, Char.ofNat 0, Char.ofNat 98] (by decide)))
   massert b4
-  let b5 ← names_equal_trait (toStr "a\x00b") (toStr "a\x00c")
+  let b5 ←
+    names_equal_trait
+      (Str.ofBytes [97#u8, 0#u8, 98#u8] (by scalar_tac) (.intro [Char.ofNat 97, Char.ofNat 0, Char.ofNat 98] (by decide)))
+      (Str.ofBytes [97#u8, 0#u8, 99#u8] (by scalar_tac) (.intro [Char.ofNat 97, Char.ofNat 0, Char.ofNat 99] (by decide)))
   massert (¬ b5)
-  let b6 ← names_equal_ref_trait (toStr "") (toStr "")
+  let b6 ←
+    names_equal_ref_trait
+      (Str.ofBytes [] (by scalar_tac) (.intro [] (by decide)))
+      (Str.ofBytes [] (by scalar_tac) (.intro [] (by decide)))
   massert b6
-  let b7 ← names_equal_ref_trait (toStr "é") (toStr "é")
+  let b7 ←
+    names_equal_ref_trait
+      (Str.ofBytes [195#u8, 169#u8] (by scalar_tac) (.intro [Char.ofNat 233] (by decide)))
+      (Str.ofBytes [101#u8, 204#u8, 129#u8] (by scalar_tac) (.intro [Char.ofNat 101, Char.ofNat 769] (by decide)))
   massert (¬ b7)
 
 /- Unit test for [str_equality::literal_checks] -/

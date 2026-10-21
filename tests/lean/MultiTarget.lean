@@ -107,7 +107,8 @@ def dispatch_add.«aarch64-apple-darwin»
     Source: 'tests/src/multi-target.rs', lines 52:0-70:1 -/
 def dispatch_add (i : Std.U128) (i1 : Std.U128) : RustM Std.U128 := do
   let tgt ← get_target
-  if tgt = (toStr "x86_64-apple-darwin")
+  if tgt =
+    (Str.ofBytes [120#u8, 56#u8, 54#u8, 95#u8, 54#u8, 52#u8, 45#u8, 97#u8, 112#u8, 112#u8, 108#u8, 101#u8, 45#u8, 100#u8, 97#u8, 114#u8, 119#u8, 105#u8, 110#u8] (by scalar_tac) (.intro [Char.ofNat 120, Char.ofNat 56, Char.ofNat 54, Char.ofNat 95, Char.ofNat 54, Char.ofNat 52, Char.ofNat 45, Char.ofNat 97, Char.ofNat 112, Char.ofNat 112, Char.ofNat 108, Char.ofNat 101, Char.ofNat 45, Char.ofNat 100, Char.ofNat 97, Char.ofNat 114, Char.ofNat 119, Char.ofNat 105, Char.ofNat 110] (by decide)))
   then dispatch_add.«x86_64-apple-darwin» i i1
   else dispatch_add.«aarch64-apple-darwin» i i1
 
