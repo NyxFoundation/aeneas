@@ -6,6 +6,21 @@ namespace Aeneas.Std
 
 instance : DecidableEq Str := inferInstanceAs (DecidableEq (Slice U8))
 
+/-- Shared byte view. `Str` is represented by its UTF-8 bytes, not by characters.
+    The Rust signature ties the returned shared slice to the input lifetime;
+    the ordinary builtin-call interpreter retains that dependency. -/
+@[rust_fun "core::str::{str}::as_bytes"]
+def core.str.Str.as_bytes (s : Str) : RustM (Slice U8) := .ok s
+
+@[simp, step_simps]
+theorem core.str.Str.as_bytes_eq (s : Str) : as_bytes s = .ok s := rfl
+
+/-- Exact list equality preserves every byte and its order, for arbitrary inputs. -/
+theorem core.str.Str.as_bytes_exact (s : Str) :
+    ∃ bs, as_bytes s = .ok bs ∧ bs.val = s.val ∧ bs.val.length = s.val.length ∧
+      ∀ i : Nat, bs.val[i]? = s.val[i]? :=
+  ⟨s, rfl, rfl, rfl, fun _ => rfl⟩
+
 /-- `bs.toList` has the same length as `bs`. -/
 theorem ByteArray.length_toList (bs : ByteArray) :
     bs.toList.length = bs.size := by
@@ -33,6 +48,17 @@ def toStr (s : String) (h : s.toByteArray.size ≤ U32.max := by decide +native)
         List.length_map]
       rw [ByteArray.length_toList]
       exact h.trans (by scalar_tac) ⟩
+
+/-- The string conversion preserves the UTF-8 encoder's bytes and their order.
+    The size premise is explicit: this proof does not use native evaluation. -/
+theorem toStr_utf8_bytes (s : String) (h : s.toByteArray.size ≤ U32.max) :
+    (toStr s h).val.map (fun b => b.val) = s.toByteArray.toList.map UInt8.toNat := by
+  simp only [toStr, List.map_map]
+  congr 1
+
+theorem toStr_utf8_length (s : String) (h : s.toByteArray.size ≤ U32.max) :
+    (toStr s h).val.length = s.toByteArray.size := by
+  simp only [toStr, List.length_map, ByteArray.length_toList]
 
 example : Str := toStr "hello"
 

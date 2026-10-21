@@ -104,6 +104,9 @@ package «tests» {}
 @[default_target] lean_lib StaticProperties
 @[default_target] lean_lib StepBy
 @[default_target] lean_lib StepOverflowing
+@[default_target] lean_lib StrBytes
+@[default_target] lean_lib StrBytesProofs
+@[default_target] lean_lib StrEquality
 @[default_target] lean_lib StringChars
 @[default_target] lean_lib SwitchTest
 @[default_target] lean_lib TargetFeatures

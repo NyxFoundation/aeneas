@@ -10,10 +10,24 @@ module T = Types
 let extract_str (_span : Meta.span) (fmt : F.formatter) ~(inside : bool)
     (s : string) : unit =
   let chars = StringUtils.string_to_chars s in
-  (* Using the OCaml escape conventions for now.
-
-     TODO: does this really work? *)
-  let s = String.concat "" (List.map Char.escaped chars) in
+  let escape_char =
+    match backend () with
+    | Lean -> (
+        (* Rust strings and Lean source are UTF-8. Preserve non-ASCII bytes
+           verbatim: escaping each byte as a Unicode code point would change
+           the string. Lean does not accept OCaml decimal escapes either. *)
+        function
+        | '"' -> "\\\""
+        | '\\' -> "\\\\"
+        | '\n' -> "\\n"
+        | '\r' -> "\\r"
+        | '\t' -> "\\t"
+        | c when Char.code c < 0x20 || Char.code c = 0x7f ->
+            Printf.sprintf "\\x%02x" (Char.code c)
+        | c -> String.make 1 c)
+    | FStar | Coq | HOL4 -> Char.escaped
+  in
+  let s = String.concat "" (List.map escape_char chars) in
   let s = "\"" ^ s ^ "\"" in
 
   (* We need to convert the string to a str (the conversion inserts a static check

@@ -1274,6 +1274,8 @@ let lean_builtin_funs =
       "core::str::iter::{core::iter::traits::iterator::Iterator<core::str::iter::Chars<'a>, \
        char>}::next"
       "core.str.iter.IteratorChars.next";
+    (* file: "Aeneas/Std/String.lean", line: 12 *)
+    mk_fun "core::str::{str}::as_bytes" "core.str.Str.as_bytes";
     (* file: "Aeneas/Std/StringIter.lean", line: 29 *)
     mk_fun "core::str::{str}::chars" "core.str.Str.chars";
     (* file: "Aeneas/Std/Std/Io.lean", line: 5 *)
