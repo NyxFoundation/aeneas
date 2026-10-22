@@ -4,9 +4,20 @@ import Aeneas.Std.StringDef
 
 namespace Aeneas.Std
 
-instance : DecidableEq Str := inferInstanceAs (DecidableEq (Slice U8))
+/-- Shared byte view; the normal Rust signature-driven interpreter retains loans. -/
+@[rust_fun "core::str::{str}::as_bytes"]
+def core.str.Str.as_bytes (s : Str) : RustM (Slice U8) := .ok s.bytes
 
-/-- `bs.toList` has the same length as `bs`. -/
+@[simp, step_simps]
+theorem core.str.Str.as_bytes_eq (s : Str) : as_bytes s = .ok s.bytes := rfl
+
+/-- Exact byte, order, position and length preservation for arbitrary Rust strings. -/
+theorem core.str.Str.as_bytes_exact (s : Str) :
+    ∃ bs, as_bytes s = .ok bs ∧ bs.val = s.bytes.val ∧
+      bs.val.length = s.bytes.val.length ∧ ∀ i : Nat, bs.val[i]? = s.bytes.val[i]? :=
+  ⟨s.bytes, rfl, rfl, rfl, fun _ => rfl⟩
+
+/-- `bs.toList` has the same length as `bs` (retained public byte-array law). -/
 theorem ByteArray.length_toList (bs : ByteArray) :
     bs.toList.length = bs.size := by
   have loop_length :
@@ -24,16 +35,38 @@ theorem ByteArray.length_toList (bs : ByteArray) :
   rw [loop_length 0 [] (Nat.zero_le _)]
   simp
 
-/-- TODO: we shouldn't use `decide +native` but it seems we can't reduce it otherwise. -/
-def toStr (s : String) (h : s.toByteArray.size ≤ U32.max := by decide +native) : Str :=
-  ⟨ s.toByteArray.toList.map
-    (fun x => ⟨ x.toNat, by cases x; simp only [UInt8.toNat_ofBitVec, UScalarTy.U8_numBits_eq, Nat.reducePow]; omega  ⟩),
-    by
-      simp only [UScalarTy.U8_numBits_eq, Nat.reducePow, Fin.mk_uInt8ToNat, BitVec.ofFin_uInt8ToFin,
-        List.length_map]
-      rw [ByteArray.length_toList]
-      exact h.trans (by scalar_tac) ⟩
+/-- Conversion of any native-sized Lean string. There is no U32 cap or native
+    proof default. Extracted literals instead use `Str.ofBytes`. -/
+def toStr (s : String) (h : s.toByteArray.size ≤ Usize.max) : Str :=
+  { bytes := ⟨s.toByteArray.data.toList.map U8.ofUInt8, by simpa using h⟩
+    isValidUTF8 := by simpa [List.map_map, Function.comp_def] using s.isValidUTF8 }
 
-example : Str := toStr "hello"
+@[simp] theorem toStr_bytes (s : String) (h : s.toByteArray.size ≤ Usize.max) :
+    (toStr s h).bytes.val.map U8.toUInt8 = s.toByteArray.data.toList := by
+  simp [toStr, List.map_map, Function.comp_def]
+
+@[simp] theorem toStr_length (s : String) (h : s.toByteArray.size ≤ Usize.max) :
+    (toStr s h).bytes.val.length = s.toByteArray.size := by
+  simp [toStr]
+
+@[simp] theorem Str.toString_toStr (s : String) (h : s.toByteArray.size ≤ Usize.max) :
+    (toStr s h).toString = s := by
+  apply String.toByteArray_inj.mp
+  simp
+
+@[simp] theorem Str.toStr_toString (s : Str) :
+    toStr s.toString (by simpa using s.bytes.property) = s := by
+  cases s with
+  | mk bytes valid =>
+    apply Str.ext
+    apply Subtype.ext
+    simp [toStr, Str.toString, String.fromUTF8, List.map_map, Function.comp_def]
+
+theorem Str.toString_injective : Function.Injective Str.toString := by
+  intro a b h
+  apply Str.ext
+  apply Subtype.ext
+  have hb := congrArg (fun s : String => s.toByteArray.data.toList.map U8.ofUInt8) h
+  simpa [Str.toString, String.fromUTF8, List.map_map, Function.comp_def] using hb
 
 end Aeneas.Std

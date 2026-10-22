@@ -1,0 +1,5 @@
+[[92mInfo[39m ] Imported: tests/llbc/str_transmute_unsupported.llbc
+[[91mError[39m] Invalid input for unop: transmute<&'_ [u8], &'_ str> on &'_ [u8]
+Source: 'tests/src/str-transmute-unsupported.rs', lines 8:4-8:31
+Compiler source: interp/InterpExpressions.ml, line 966
+

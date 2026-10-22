@@ -27,7 +27,7 @@ def slice_to_array (s : Slice Std.U8) : RustM (Array Std.U8 32#usize) := do
     Source: 'tests/src/into.rs', lines 8:0-10:1 -/
 def slice_to_array1 (s : Slice Std.U8) : RustM (Array Std.U8 32#usize) := do
   let r ← core.array.TryFromSharedArraySlice.try_from 32#usize s
-  core.result.Result.expect core.fmt.DebugTryFromSliceError r (toStr
-    "Expected a slice of length 32")
+  core.result.Result.expect core.fmt.DebugTryFromSliceError r
+    (Str.ofBytes [69#u8, 120#u8, 112#u8, 101#u8, 99#u8, 116#u8, 101#u8, 100#u8, 32#u8, 97#u8, 32#u8, 115#u8, 108#u8, 105#u8, 99#u8, 101#u8, 32#u8, 111#u8, 102#u8, 32#u8, 108#u8, 101#u8, 110#u8, 103#u8, 116#u8, 104#u8, 32#u8, 51#u8, 50#u8] (by scalar_tac) (.intro [Char.ofNat 69, Char.ofNat 120, Char.ofNat 112, Char.ofNat 101, Char.ofNat 99, Char.ofNat 116, Char.ofNat 101, Char.ofNat 100, Char.ofNat 32, Char.ofNat 97, Char.ofNat 32, Char.ofNat 115, Char.ofNat 108, Char.ofNat 105, Char.ofNat 99, Char.ofNat 101, Char.ofNat 32, Char.ofNat 111, Char.ofNat 102, Char.ofNat 32, Char.ofNat 108, Char.ofNat 101, Char.ofNat 110, Char.ofNat 103, Char.ofNat 116, Char.ofNat 104, Char.ofNat 32, Char.ofNat 51, Char.ofNat 50] (by decide)))
 
 end into

@@ -20,7 +20,9 @@ namespace print
 /-- [print::call_println]:
     Source: 'tests/src/print.rs', lines 4:0-6:1 -/
 def call_println : RustM Unit := do
-  let a ← core.fmt.Arguments.from_str (toStr "Hello World!\n")
+  let a ←
+    core.fmt.Arguments.from_str
+      (Str.ofBytes [72#u8, 101#u8, 108#u8, 108#u8, 111#u8, 32#u8, 87#u8, 111#u8, 114#u8, 108#u8, 100#u8, 33#u8, 10#u8] (by scalar_tac) (.intro [Char.ofNat 72, Char.ofNat 101, Char.ofNat 108, Char.ofNat 108, Char.ofNat 111, Char.ofNat 32, Char.ofNat 87, Char.ofNat 111, Char.ofNat 114, Char.ofNat 108, Char.ofNat 100, Char.ofNat 33, Char.ofNat 10] (by decide)))
   std.io.stdio._print a
 
 end print

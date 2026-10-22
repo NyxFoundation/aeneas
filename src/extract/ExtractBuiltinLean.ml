@@ -1264,7 +1264,7 @@ let lean_builtin_funs =
     mk_fun "core::slice::{[@T]}::split_at_mut" "core.slice.Slice.split_at_mut";
     (* file: "Aeneas/Std/Slice.lean", line: 804 *)
     mk_fun "core::slice::{[@T]}::swap" "core.slice.Slice.swap";
-    (* file: "Aeneas/Std/StringIter.lean", line: 16 *)
+    (* file: "Aeneas/Std/StringIter.lean", line: 24 *)
     mk_fun
       "core::str::iter::{core::iter::traits::iterator::Iterator<core::str::iter::Chars<'a>, \
        char>}::collect"
@@ -1274,7 +1274,9 @@ let lean_builtin_funs =
       "core::str::iter::{core::iter::traits::iterator::Iterator<core::str::iter::Chars<'a>, \
        char>}::next"
       "core.str.iter.IteratorChars.next";
-    (* file: "Aeneas/Std/StringIter.lean", line: 29 *)
+    (* file: "Aeneas/Std/String.lean", line: 8 *)
+    mk_fun "core::str::{str}::as_bytes" "core.str.Str.as_bytes";
+    (* file: "Aeneas/Std/StringIter.lean", line: 31 *)
     mk_fun "core::str::{str}::chars" "core.str.Str.chars";
     (* file: "Aeneas/Std/Std/Io.lean", line: 5 *)
     mk_fun "std::io::stdio::_print" "std.io.stdio._print";
@@ -1677,7 +1679,7 @@ let lean_builtin_trait_impls =
       "core::iter::traits::iterator::Iterator<core::slice::iter::Iter<'a, @T>, \
        &'a @T>"
       "core.iter.traits.iterator.IteratorSliceIter";
-    (* file: "Aeneas/Std/StringIter.lean", line: 22 *)
+    (* file: "Aeneas/Std/StringIter.lean", line: 17 *)
     mk_trait_impl
       "core::iter::traits::iterator::Iterator<core::str::iter::Chars<'a>, char>"
       "core.iter.traits.iterator.IteratorChars";
